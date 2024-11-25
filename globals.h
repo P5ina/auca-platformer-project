@@ -17,7 +17,7 @@ const char EXIT   = 'E';
 
 /* Levels */
 
-struct level {
+struct Level {
     size_t rows = 0, columns = 0;
     char *data = nullptr;
 };
@@ -32,7 +32,7 @@ char LEVEL_1_DATA[] = {
     '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
 };
 
-level LEVEL_1 = {
+Level LEVEL_1 = {
     7, 11,
     LEVEL_1_DATA
 };
@@ -40,13 +40,13 @@ level LEVEL_1 = {
 int level_index = 0;
 const int LEVEL_COUNT = 1;
 
-level LEVELS[LEVEL_COUNT] = {
+Level LEVELS[LEVEL_COUNT] = {
     LEVEL_1
 };
 
 /* Loaded Level Data */
 
-level current_level;
+Level current_level;
 char *current_level_data;
 
 /* Player data */
@@ -122,7 +122,7 @@ Texture2D wall_image;
 Texture2D air_image;
 Texture2D exit_image;
 
-struct sprite {
+struct Sprite {
     size_t frame_count    = 0;
     size_t frames_to_skip = 3;
     size_t frames_skipped = 0;
@@ -132,8 +132,8 @@ struct sprite {
     Texture2D *frames = nullptr;
 };
 
-sprite coin_sprite;
-sprite player_sprite;
+Sprite coin_sprite;
+Sprite player_sprite;
 
 /* Sounds */
 
@@ -142,7 +142,7 @@ Sound exit_sound;
 
 /* Victory Menu Background */
 
-struct victory_ball {
+struct VictoryBall {
     float x, y;
     float dx, dy;
     float radius;
@@ -154,7 +154,7 @@ const float VICTORY_BALL_MIN_RADIUS = 2.0f;
 const float VICTORY_BALL_MAX_RADIUS = 3.0f;
 const Color VICTORY_BALL_COLOR      = { 180, 180, 180, 255 };
 const unsigned char VICTORY_BALL_TRAIL_TRANSPARENCY = 10;
-victory_ball victory_balls[VICTORY_BALL_COUNT];
+VictoryBall victory_balls[VICTORY_BALL_COUNT];
 
 /* Frame Counter */
 
@@ -162,11 +162,11 @@ size_t game_frame = 0;
 
 /* Game States */
 
-enum game_state {
+enum GameState {
     GAME_STATE
     // TODO
 };
-game_state game_state = GAME_STATE;
+GameState game_state = GAME_STATE;
 
 /* Forward Declarations */
 
@@ -186,8 +186,8 @@ void draw_victory_menu();
 
 // LEVEL_H
 
-bool is_colliding(Vector2 pos, char look_for = '#', level &level = current_level);
-char& get_collider(Vector2 pos, char look_for, level &level = current_level);
+bool is_colliding(Vector2 pos, char look_for = '#', Level &level = current_level);
+char& get_collider(Vector2 pos, char look_for, Level &level = current_level);
 
 void load_level(int offset = 0);
 void unload_level();
@@ -209,16 +209,16 @@ void unload_images();
 void draw_image(Texture2D image, Vector2 pos, float width, float height);
 void draw_image(Texture2D image, Vector2 pos, float size);
 
-sprite load_sprite(
+Sprite load_sprite(
     const std::string &file_name_prefix,
     const std::string &file_name_suffix,
     size_t frame_count = 1,
     bool loop = true,
     size_t frames_to_skip = 3
 );
-void unload_sprite(sprite &sprite);
-void draw_sprite(sprite &sprite, Vector2 pos, float width, float height);
-void draw_sprite(sprite &sprite, Vector2 pos, float size);
+void unload_sprite(Sprite &sprite);
+void draw_sprite(Sprite &sprite, Vector2 pos, float width, float height);
+void draw_sprite(Sprite &sprite, Vector2 pos, float size);
 
 void load_sounds();
 void unload_sounds();

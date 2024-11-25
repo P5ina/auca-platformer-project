@@ -3,7 +3,7 @@
 
 #include "globals.h"
 
-bool is_colliding(Vector2 pos, char look_for, level &level) {
+bool is_colliding(Vector2 pos, char look_for, Level &level) {
     Rectangle player_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     for (size_t row = 0; row < level.rows; ++row) {
@@ -19,7 +19,7 @@ bool is_colliding(Vector2 pos, char look_for, level &level) {
     return false;
 }
 
-char& get_collider(Vector2 pos, char look_for, level &level) {
+char& get_collider(Vector2 pos, char look_for, Level &level) {
     Rectangle player_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     for (size_t row = 0; row < level.rows; ++row) {
