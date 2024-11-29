@@ -153,20 +153,10 @@ inline VictoryBall victory_balls[VICTORY_BALL_COUNT];
 
 inline size_t game_frame = 0;
 
-/* Game States */
-
-enum GameState {
-    MENU_STATE,
-    GAME_STATE
-};
-
-inline GameState game_state = GAME_STATE;
-
 /* Forward Declarations */
 
 // GRAPHICS_H
 
-void draw_text(Text &text);
 void derive_graphics_metrics_from_loaded_level();
 void draw_game_overlay();
 void draw_level();

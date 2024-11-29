@@ -1,3 +1,5 @@
+#include <graphics/scene.h>
+
 #include "raylib.h"
 
 #include "globals.h"
@@ -6,7 +8,7 @@
 #include "graphics_old.h"
 #include "assets.h"
 #include "utilities.h"
-#include "graphics/menu.h"
+#include "graphics/scenes/menu.h"
 
 void update_game() {
     game_frame++;
@@ -34,15 +36,7 @@ void draw_game() {
     // TODO
 
     ClearBackground(BLACK);
-    switch (game_state) {
-        case MENU_STATE:
-            draw_menu();
-            break;
-        default:
-            draw_level();
-            draw_game_overlay();
-            break;
-    }
+    draw_current_scene();
 }
 
 int main() {

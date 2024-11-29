@@ -5,7 +5,7 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include "globals.h"
+#include <globals.h>
 
 void draw_text(Text &text);
 

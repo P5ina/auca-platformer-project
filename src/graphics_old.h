@@ -2,6 +2,7 @@
 #define GRAPHICS_OLD_H
 
 #include "globals.h"
+#include <graphics/text.h>
 
 void derive_graphics_metrics_from_loaded_level() {
     screen_size.x  = static_cast<float>(GetScreenWidth());

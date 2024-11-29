@@ -16,8 +16,15 @@ struct FireParticle {
     Color color;
 };
 
+Text game_title = {
+    "Deep Woods",
+    { 0.50f, 0.30f },
+    100.0f,
+};
+
 void draw_menu() {
     main_menu_elapsed_time += GetFrameTime();
+    draw_game_title();
 }
 
 void draw_game_title() {

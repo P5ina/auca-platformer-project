@@ -7,13 +7,7 @@
 
 #include "globals.h"
 
-inline Text game_title = {
-    "Deep Woods",
-    { 0.50f, 0.30f },
-    100.0f,
-    RED
-};
-
 void draw_menu();
+void draw_game_title();
 
 #endif //MENU_H
