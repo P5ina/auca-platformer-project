@@ -27,22 +27,22 @@ struct LevelPosition {
     int x, y, z;
 };
 
-struct Level {
-    LevelPosition position;
+struct LoadedLevel {
+    // TODO: Add info about exits
+    // LevelInfo info;
     int rows;
     int columns;
     std::vector<LevelTile> tiles;
 };
 
-void load_levels();
-Level parse_level(Image *image, LevelPosition position);
+void load_level(LevelPosition position);
+std::vector<LevelTile> parse_level(const Image *image);
 LevelTile get_tile_from_color(Color color);
 
-Level get_current_level();
+LoadedLevel *get_current_level();
 
 bool is_colliding(Vector2 pos, LevelTile look_for);
-std::vector<LevelTile>::iterator get_collider(Vector2 pos, LevelTile look_for);
-
-void load_level(LevelPosition position);
+int get_collider_tile_index(Vector2 pos, LevelTile look_for);
+void set_tile_at_index(int tile_index, LevelTile tile);
 
 #endif //LEVEL_H

@@ -45,7 +45,6 @@ int main() {
     load_fonts();
     load_images();
     load_sounds();
-    load_levels();
 
     load_level(LevelPosition { 0, 0, 0 });
 

@@ -12,15 +12,15 @@ void derive_graphics_metrics_from_loaded_level() {
     auto level = get_current_level();
 
     cell_size = std::min(
-        screen_size.x / static_cast<float>(level.columns),
-        screen_size.y / static_cast<float>(level.rows)
+        screen_size.x / static_cast<float>(level->columns),
+        screen_size.y / static_cast<float>(level->rows)
     ) * CELL_SCALE;
     screen_scale = std::min(
         screen_size.x,
         screen_size.y
     ) / SCREEN_SCALE_DIVISOR;
-    float level_width  = static_cast<float>(level.columns) * cell_size;
-    float level_height = static_cast<float>(level.rows)    * cell_size;
+    float level_width  = static_cast<float>(level->columns) * cell_size;
+    float level_height = static_cast<float>(level->rows)    * cell_size;
     shift_to_center.x = (screen_size.x - level_width) * 0.5f;
     shift_to_center.y = (screen_size.y - level_height) * 0.5f;
 }
@@ -45,15 +45,15 @@ void draw_game_overlay() {
 void draw_level() {
     auto level = get_current_level();
 
-    for (size_t row = 0; row < level.rows; ++row) {
-        for (size_t column = 0; column < level.columns; ++column) {
+    for (size_t row = 0; row < level->rows; ++row) {
+        for (size_t column = 0; column < level->columns; ++column) {
 
             Vector2 pos = {
                     shift_to_center.x + static_cast<float>(column) * cell_size,
                     shift_to_center.y + static_cast<float>(row) * cell_size
             };
 
-            char cell = level.tiles[row * level.columns + column];
+            char cell = level->tiles[row * level->columns + column];
             // The first image layer
             switch (cell) {
                 case AIR:
