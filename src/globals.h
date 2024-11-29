@@ -6,48 +6,7 @@
 #include <string>
 #include <cstddef>
 #include <cmath>
-
-/* Game Elements */
-
-const char WALL   = '#';
-const char AIR    = ' ';
-const char PLAYER = '@';
-const char COIN   = '*';
-const char EXIT   = 'E';
-
-/* Levels */
-
-struct Level {
-    size_t rows = 0, columns = 0;
-    char *data = nullptr;
-};
-
-inline char LEVEL_1_DATA[] = {
-    '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-    '#', ' ', '@', ' ', ' ', ' ', ' ', ' ', 'E', ' ', '#',
-    '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
-};
-
-inline Level LEVEL_1 = {
-    7, 11,
-    LEVEL_1_DATA
-};
-
-inline int level_index = 0;
-const int LEVEL_COUNT = 1;
-
-inline Level LEVELS[LEVEL_COUNT] = {
-    LEVEL_1
-};
-
-/* Loaded Level Data */
-
-inline Level current_level;
-inline char *current_level_data;
+#include <level/level.h>
 
 /* Player data */
 
@@ -166,14 +125,6 @@ void create_victory_menu_background();
 void animate_victory_menu_background();
 void draw_victory_menu_background();
 void draw_victory_menu();
-
-// LEVEL_H
-
-bool is_colliding(Vector2 pos, char look_for = '#', Level &level = current_level);
-char& get_collider(Vector2 pos, char look_for, Level &level = current_level);
-
-void load_level(int offset = 0);
-void unload_level();
 
 // PLAYER_H
 

@@ -9,13 +9,12 @@
 
 struct GlobalState {
     Scene current_scene;
-    int current_level_x;
-    int current_level_y;
+    int current_level;
 };
 
 inline GlobalState global_state = {
     .current_scene = LEVEL_SCENE,
-    0, 0
+    0
 };
 
 void go_to_next_level(int level_x, int level_y);
