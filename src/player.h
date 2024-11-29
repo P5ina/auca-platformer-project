@@ -4,10 +4,12 @@
 #include "globals.h"
 
 void spawn_player() {
-    for (size_t row = 0; row < current_level.rows; ++row) {
-        for (size_t column = 0; column < current_level.columns; ++column) {
-            char cell = current_level.data[row * current_level.columns + column];
-            if (cell == PLAYER) {
+    auto level = get_current_level();
+
+    for (size_t row = 0; row < level->rows; ++row) {
+        for (size_t column = 0; column < level->columns; ++column) {
+            LevelTile tile = level->tiles[row * level->columns + column];
+            if (tile == PLAYER_SPAWN) {
                 player_pos.x = static_cast<float>(column);
                 player_pos.y = static_cast<float>(row);
                 return;
@@ -36,13 +38,13 @@ void update_player() {
     }
 
     if (is_colliding(player_pos, COIN)) {
-        get_collider(player_pos, COIN) = ' ';
-        player_score+=10;
+        int index = get_collider_tile_index(player_pos, COIN);
+        set_tile_at_index(index, AIR);
+        player_score += 10;
         PlaySound(coin_sound);
     }
     if (is_colliding(player_pos, EXIT)) {
         // TODO
-
     }
 }
 

@@ -3,7 +3,6 @@
 #include "raylib.h"
 
 #include "globals.h"
-#include "level.h"
 #include "player.h"
 #include "graphics_old.h"
 #include "assets.h"
@@ -46,7 +45,8 @@ int main() {
     load_fonts();
     load_images();
     load_sounds();
-    load_level();
+
+    load_level(LevelPosition { 0, 0, 0 });
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -57,7 +57,6 @@ int main() {
         EndDrawing();
     }
 
-    unload_level();
     unload_sounds();
     unload_images();
     unload_fonts();
