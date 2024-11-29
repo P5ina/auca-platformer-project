@@ -8,7 +8,7 @@
 #include <cassert>
 
 void load_fonts() {
-    menu_font = LoadFontEx("data/fonts/ARCADE_N.ttf", 256, nullptr, 128);
+    menu_font = LoadFontEx(ASSETS_PATH"fonts/ARCADE_N.ttf", 256, nullptr, 128);
 }
 
 void unload_fonts() {
@@ -16,11 +16,11 @@ void unload_fonts() {
 }
 
 void load_images() {
-    wall_image    = LoadTexture("data/images/wall.png");
-    air_image     = LoadTexture("data/images/air.png");
-    exit_image    = LoadTexture("data/images/exit.png");
-    coin_sprite   = load_sprite("data/images/coin/coin",     ".png", 3, true, 18);
-    player_sprite = load_sprite("data/images/player/player", ".png", 3, true, 10);
+    wall_image    = LoadTexture(ASSETS_PATH"images/wall.png");
+    air_image     = LoadTexture(ASSETS_PATH"images/air.png");
+    exit_image    = LoadTexture(ASSETS_PATH"images/exit.png");
+    coin_sprite   = load_sprite(ASSETS_PATH"images/coin/coin",     ".png", 3, true, 18);
+    player_sprite = load_sprite(ASSETS_PATH"images/player/player", ".png", 3, true, 10);
 }
 
 void unload_images() {
@@ -107,8 +107,8 @@ void draw_sprite(Sprite &sprite, Vector2 pos, float width, float height) {
 void load_sounds() {
     InitAudioDevice();
 
-    coin_sound = LoadSound("data/sounds/coin.wav");
-    exit_sound = LoadSound("data/sounds/exit.wav");
+    coin_sound = LoadSound(ASSETS_PATH"sounds/coin.wav");
+    exit_sound = LoadSound(ASSETS_PATH"sounds/exit.wav");
 }
 
 void unload_sounds() {
