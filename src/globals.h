@@ -22,7 +22,7 @@ struct Level {
     char *data = nullptr;
 };
 
-char LEVEL_1_DATA[] = {
+inline char LEVEL_1_DATA[] = {
     '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
     '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
@@ -32,22 +32,22 @@ char LEVEL_1_DATA[] = {
     '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
 };
 
-Level LEVEL_1 = {
+inline Level LEVEL_1 = {
     7, 11,
     LEVEL_1_DATA
 };
 
-int level_index = 0;
+inline int level_index = 0;
 const int LEVEL_COUNT = 1;
 
-Level LEVELS[LEVEL_COUNT] = {
+inline Level LEVELS[LEVEL_COUNT] = {
     LEVEL_1
 };
 
 /* Loaded Level Data */
 
-Level current_level;
-char *current_level_data;
+inline Level current_level;
+inline char *current_level_data;
 
 /* Player data */
 
@@ -55,12 +55,12 @@ const float GRAVITY_FORCE = 0.01f;
 const float JUMP_STRENGTH = 0.3f;
 const float MOVEMENT_SPEED = 0.1f;
 
-Vector2 player_pos;
-float player_y_velocity = 0;
+inline Vector2 player_pos;
+inline float player_y_velocity = 0;
 
-bool is_player_on_ground;
+inline bool is_player_on_ground;
 
-int player_score = 0;
+inline int player_score = 0;
 
 /* Graphic Metrics */
 
@@ -68,14 +68,14 @@ const float CELL_SCALE = 0.8f; // An aesthetic parameter to add some negative sp
 const float SCREEN_SCALE_DIVISOR = 700.0f; // The divisor was found through experimentation
                                            // to scale things accordingly to look pleasant.
 
-Vector2 screen_size;
-float screen_scale; // Used to scale str/UI components size and displacements based on the screen_size size
-float cell_size;
-Vector2 shift_to_center;
+inline Vector2 screen_size;
+inline float screen_scale; // Used to scale str/UI components size and displacements based on the screen_size size
+inline float cell_size;
+inline Vector2 shift_to_center;
 
 /* Fonts */
 
-Font menu_font;
+inline Font menu_font;
 
 /* Display Text Parameters */
 
@@ -88,39 +88,32 @@ struct Text {
     Font* font = &menu_font;
 };
 
-Text game_title = {
-    "Platformer",
-    { 0.50f, 0.50f },
-    100.0f,
-    RED
-};
-
-Text game_subtitle = {
+inline Text game_subtitle = {
     "Press Enter to Start",
     { 0.50f, 0.65f }
 };
 
-Text game_paused = {
+inline Text game_paused = {
     "Press Escape to Resume"
 };
 
-Text victory_title = {
+inline Text victory_title = {
     "You Won!",
     { 0.50f, 0.50f },
     100.0f,
     RED
 };
 
-Text victory_subtitle = {
+inline Text victory_subtitle = {
     "Press Enter to go back to menu",
     { 0.50f, 0.65f }
 };
 
 /* Images and Sprites */
 
-Texture2D wall_image;
-Texture2D air_image;
-Texture2D exit_image;
+inline Texture2D wall_image;
+inline Texture2D air_image;
+inline Texture2D exit_image;
 
 struct Sprite {
     size_t frame_count    = 0;
@@ -132,13 +125,13 @@ struct Sprite {
     Texture2D *frames = nullptr;
 };
 
-Sprite coin_sprite;
-Sprite player_sprite;
+inline Sprite coin_sprite;
+inline Sprite player_sprite;
 
 /* Sounds */
 
-Sound coin_sound;
-Sound exit_sound;
+inline Sound coin_sound;
+inline Sound exit_sound;
 
 /* Victory Menu Background */
 
@@ -154,19 +147,20 @@ const float VICTORY_BALL_MIN_RADIUS = 2.0f;
 const float VICTORY_BALL_MAX_RADIUS = 3.0f;
 const Color VICTORY_BALL_COLOR      = { 180, 180, 180, 255 };
 const unsigned char VICTORY_BALL_TRAIL_TRANSPARENCY = 10;
-VictoryBall victory_balls[VICTORY_BALL_COUNT];
+inline VictoryBall victory_balls[VICTORY_BALL_COUNT];
 
 /* Frame Counter */
 
-size_t game_frame = 0;
+inline size_t game_frame = 0;
 
 /* Game States */
 
 enum GameState {
+    MENU_STATE,
     GAME_STATE
-    // TODO
 };
-GameState game_state = GAME_STATE;
+
+inline GameState game_state = GAME_STATE;
 
 /* Forward Declarations */
 
@@ -174,7 +168,6 @@ GameState game_state = GAME_STATE;
 
 void draw_text(Text &text);
 void derive_graphics_metrics_from_loaded_level();
-void draw_menu();
 void draw_game_overlay();
 void draw_level();
 void draw_player();

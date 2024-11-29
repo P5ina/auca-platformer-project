@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
-project(platformer)
+project(platformer CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Downloading packages
 include(FetchContent)
@@ -18,7 +19,6 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
 
 # box2d
 set(BOX2D_VERSION 3.0.0)
-
 FetchContent_Declare(
         box2d
         DOWNLOAD_EXTRACT_TIMESTAMP OFF
@@ -37,7 +37,8 @@ elseif(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fsanitize=address -fsanitize=undefined")
 endif()
 
-add_executable(${PROJECT_NAME})
+add_executable(${PROJECT_NAME}
+        src/graphics/menu.h)
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 target_link_libraries(${PROJECT_NAME} raylib)

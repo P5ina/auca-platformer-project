@@ -3,9 +3,10 @@
 #include "globals.h"
 #include "level.h"
 #include "player.h"
-#include "graphics.h"
+#include "graphics_old.h"
 #include "assets.h"
 #include "utilities.h"
+#include "graphics/menu.h"
 
 void update_game() {
     game_frame++;
@@ -33,8 +34,15 @@ void draw_game() {
     // TODO
 
     ClearBackground(BLACK);
-    draw_level();
-    draw_game_overlay();
+    switch (game_state) {
+        case MENU_STATE:
+            draw_menu();
+            break;
+        default:
+            draw_level();
+            draw_game_overlay();
+            break;
+    }
 }
 
 int main() {

@@ -1,17 +1,7 @@
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#ifndef GRAPHICS_OLD_H
+#define GRAPHICS_OLD_H
 
 #include "globals.h"
-
-void draw_text(Text &text) {
-    Vector2 dimensions = MeasureTextEx(*text.font, text.str.c_str(), text.size * screen_scale, text.spacing);
-    Vector2 pos = {
-        (screen_size.x * text.position.x) - (0.5f * dimensions.x),
-        (screen_size.y * text.position.y) - (0.5f * dimensions.y)
-    };
-
-    DrawTextEx(*text.font, text.str.c_str(), pos, dimensions.y, text.spacing, text.color);
-}
 
 void derive_graphics_metrics_from_loaded_level() {
     screen_size.x  = static_cast<float>(GetScreenWidth());
@@ -29,11 +19,6 @@ void derive_graphics_metrics_from_loaded_level() {
     float level_height = static_cast<float>(current_level.rows)    * cell_size;
     shift_to_center.x = (screen_size.x - level_width) * 0.5f;
     shift_to_center.y = (screen_size.y - level_height) * 0.5f;
-}
-
-void draw_menu() {
-    draw_text(game_title);
-    draw_text(game_subtitle);
 }
 
 void draw_game_overlay() {
@@ -163,4 +148,4 @@ void draw_victory_menu() {
     draw_text(victory_subtitle);
 }
 
-#endif // GRAPHICS_H
+#endif // GRAPHICS_OLD_H
