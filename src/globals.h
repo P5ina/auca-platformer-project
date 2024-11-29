@@ -206,9 +206,4 @@ void draw_sprite(Sprite &sprite, Vector2 pos, float size);
 void load_sounds();
 void unload_sounds();
 
-// UTILITIES_H
-
-float rand_from_to(float from, float to);
-float rand_up_to(float to);
-
 #endif // GLOBALS_H
