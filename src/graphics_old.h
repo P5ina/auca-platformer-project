@@ -4,6 +4,7 @@
 #include <globals.h>
 #include <utilities.h>
 #include <graphics/text.h>
+#include <level/tiles/air.h>
 #include <level/tiles/wall.h>
 
 void derive_graphics_metrics_from_loaded_level() {
@@ -61,7 +62,7 @@ void draw_level() {
                 case PLAYER_SPAWN:
                 case COIN:
                 case EXIT:
-                    draw_image(air_image, pos, cell_size);
+                    draw_air(pos, cell_size);
                     break;
                 case WALL:
                     char surroundings = get_surroundings(column, row, level);
