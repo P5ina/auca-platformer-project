@@ -4,6 +4,7 @@
 #include <globals.h>
 #include <utilities.h>
 #include <graphics/text.h>
+#include <level/tiles/wall.h>
 
 void derive_graphics_metrics_from_loaded_level() {
     screen_size.x  = static_cast<float>(GetScreenWidth());
@@ -43,7 +44,7 @@ void draw_game_overlay() {
 }
 
 void draw_level() {
-    auto level = get_current_level();
+    LoadedLevel *level = get_current_level();
 
     for (size_t row = 0; row < level->rows; ++row) {
         for (size_t column = 0; column < level->columns; ++column) {
@@ -63,7 +64,8 @@ void draw_level() {
                     draw_image(air_image, pos, cell_size);
                     break;
                 case WALL:
-                    draw_image(wall_image, pos, cell_size);
+                    char surroundings = get_surroundings(column, row, level);
+                    draw_wall(pos, cell_size, surroundings);
                     break;
             }
             // The second image layer

@@ -112,3 +112,12 @@ void set_tile_at_index(int tile_index, LevelTile tile) {
     auto level = get_current_level();
     level->tiles[tile_index] = tile;
 }
+
+LevelTile get_tile_at(int x, int y, LoadedLevel *level) {
+    if (x < 0 || x >= level->columns ||
+        y < 0 || y >= level->rows) {
+        return LevelTile::AIR;
+    }
+    return level->tiles[x + y * level->columns];
+}
+

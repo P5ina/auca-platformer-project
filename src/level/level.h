@@ -45,4 +45,6 @@ bool is_colliding(Vector2 pos, LevelTile look_for);
 int get_collider_tile_index(Vector2 pos, LevelTile look_for);
 void set_tile_at_index(int tile_index, LevelTile tile);
 
+LevelTile get_tile_at(int x, int y, LoadedLevel *level);
+
 #endif //LEVEL_H
