@@ -9,9 +9,7 @@
 #include <string>
 #include <utilities.h>
 
-LoadedLevel current_loaded_level;
-
-void load_level(LevelPosition position) {
+void load_level(GameState game_state, LevelPosition position) {
     const std::string filepath_prefix = ASSETS_PATH"images/levels/";
 
     auto [x, y, z] = position;
@@ -31,6 +29,11 @@ void load_level(LevelPosition position) {
     spawn_player();
     derive_graphics_metrics_from_loaded_level();
 }
+
+void unload_level(LoadedLevel *level) {
+    level->world_id;
+}
+
 
 std::vector<LevelTile> parse_level(const Image *image) {
     int width = image->width;
@@ -116,7 +119,7 @@ void set_tile_at_index(int tile_index, LevelTile tile) {
 LevelTile get_tile_at(int x, int y, LoadedLevel *level) {
     if (x < 0 || x >= level->columns ||
         y < 0 || y >= level->rows) {
-        return LevelTile::AIR;
+        return LevelTile::WALL;
     }
     return level->tiles[x + y * level->columns];
 }

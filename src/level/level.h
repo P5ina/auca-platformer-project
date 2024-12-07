@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "raylib.h"
+#include "box2d/id.h"
 
 enum LevelTile {
     AIR,
@@ -32,10 +33,12 @@ struct LoadedLevel {
     // LevelInfo info;
     int rows;
     int columns;
+    b2WorldId world_id;
     std::vector<LevelTile> tiles;
 };
 
 void load_level(LevelPosition position);
+void unload_level(LoadedLevel* level);
 std::vector<LevelTile> parse_level(const Image *image);
 LevelTile get_tile_from_color(Color color);
 

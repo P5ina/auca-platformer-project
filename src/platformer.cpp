@@ -1,3 +1,4 @@
+#include <global_state.h>
 #include <graphics/scene.h>
 
 #include "raylib.h"
@@ -5,7 +6,7 @@
 #include "globals.h"
 #include "player.h"
 #include "graphics_old.h"
-#include "assets.h"
+#include "old_assets.h"
 #include "utilities.h"
 #include "graphics/scenes/menu.h"
 
@@ -45,6 +46,11 @@ int main() {
     load_fonts();
     load_images();
     load_sounds();
+
+    auto game_state = std::make_unique<GameState>(
+        Scene::MENU_SCENE,
+
+    );
 
     load_level(LevelPosition { 0, 0, 0 });
 

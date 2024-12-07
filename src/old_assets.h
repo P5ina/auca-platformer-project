@@ -1,5 +1,5 @@
-#ifndef IMAGES_H
-#define IMAGES_H
+#ifndef OLD_ASSETS_H
+#define OLD_ASSETS_H
 
 #include "raylib.h"
 #include "globals.h"
@@ -116,4 +116,4 @@ void unload_sounds() {
     UnloadSound(exit_sound);
 }
 
-#endif // IMAGES_H
+#endif // OLD_ASSETS_H
