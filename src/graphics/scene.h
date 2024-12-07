@@ -4,7 +4,9 @@
 
 #ifndef SCENE_H
 #define SCENE_H
-#include <globals.h>
+#include <memory>
+
+struct GameState;
 
 enum Scene {
     MENU_SCENE,
@@ -12,7 +14,7 @@ enum Scene {
     END_SCENE,
 };
 
-void draw_current_scene();
+void draw_current_scene(const std::unique_ptr<GameState> &game_state);
 void draw_placeholder_scene();
 
 #endif //SCENE_H

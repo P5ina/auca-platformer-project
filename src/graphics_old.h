@@ -7,11 +7,9 @@
 #include <level/tiles/air.h>
 #include <level/tiles/wall.h>
 
-void derive_graphics_metrics_from_loaded_level() {
+inline void derive_graphics_metrics_from_level(std::unique_ptr<LoadedLevel> &level) {
     screen_size.x  = static_cast<float>(GetScreenWidth());
     screen_size.y = static_cast<float>(GetScreenHeight());
-
-    auto level = get_current_level();
 
     cell_size = std::min(
         screen_size.x / static_cast<float>(level->columns),
@@ -27,79 +25,11 @@ void derive_graphics_metrics_from_loaded_level() {
     shift_to_center.y = (screen_size.y - level_height) * 0.5f;
 }
 
-void draw_game_overlay() {
-    Text score = {
-        "Score " + std::to_string(player_score),
-        { 0.50f, 0.05f },
-        48.0f
-    };
-    Text score_shadow = {
-        "Score " + std::to_string(player_score),
-        { 0.503f, 0.055f },
-        48.0f,
-        GRAY
-    };
-
-    draw_text(score_shadow);
-    draw_text(score);
-}
-
-void draw_level() {
-    LoadedLevel *level = get_current_level();
-
-    for (size_t row = 0; row < level->rows; ++row) {
-        for (size_t column = 0; column < level->columns; ++column) {
-
-            Vector2 pos = {
-                    shift_to_center.x + static_cast<float>(column) * cell_size,
-                    shift_to_center.y + static_cast<float>(row) * cell_size
-            };
-
-            char cell = level->tiles[row * level->columns + column];
-            // The first image layer
-            switch (cell) {
-                case AIR:
-                case PLAYER_SPAWN:
-                case COIN:
-                case EXIT:
-                    draw_air(pos, cell_size);
-                    break;
-                case WALL:
-                    char surroundings = get_surroundings(column, row, level);
-                    draw_wall(pos, cell_size, surroundings);
-                    break;
-            }
-            // The second image layer
-            switch (cell) {
-                case COIN:
-                    draw_sprite(coin_sprite, pos, cell_size);
-                    break;
-                case EXIT:
-                    draw_image(exit_image, pos, cell_size);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    draw_player();
-}
-
-void draw_player() {
-    Vector2 pos = {
-        shift_to_center.x + player_pos.x * cell_size,
-        shift_to_center.y + player_pos.y * cell_size
-    };
-
-    draw_sprite(player_sprite, pos, cell_size);
-}
-
-void draw_pause_menu() {
+inline void draw_pause_menu() {
     draw_text(game_paused);
 }
 
-void create_victory_menu_background() {
+inline void create_victory_menu_background() {
     for (auto &ball : victory_balls) {
         ball.x  = rand_up_to(screen_size.x);
         ball.y  = rand_up_to(screen_size.y);
@@ -122,7 +52,7 @@ void create_victory_menu_background() {
     BeginDrawing();
 }
 
-void animate_victory_menu_background() {
+inline void animate_victory_menu_background() {
     for (auto &ball : victory_balls) {
         ball.x += ball.dx;
         if (ball.x - ball.radius < 0 ||
@@ -137,13 +67,13 @@ void animate_victory_menu_background() {
     }
 }
 
-void draw_victory_menu_background() {
+inline void draw_victory_menu_background() {
     for (auto &ball : victory_balls) {
         DrawCircleV({ ball.x, ball.y }, ball.radius, VICTORY_BALL_COLOR);
     }
 }
 
-void draw_victory_menu() {
+inline void draw_victory_menu() {
     DrawRectangle(
         0, 0,
         static_cast<int>(screen_size.x), static_cast<int>(screen_size.y),

@@ -4,12 +4,13 @@
 
 #ifndef GLOBAL_STATE_H
 #define GLOBAL_STATE_H
-
+#include <memory>
 #include <graphics/scene.h>
+#include <level/level.h>
 
 struct GameState {
-    Scene scene;
-    LoadedLevel loaded_level;
+    Scene scene = Scene::MENU_SCENE;
+    std::unique_ptr<LoadedLevel> loaded_level;
     // Assets assets;
 };
 

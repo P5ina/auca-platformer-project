@@ -5,11 +5,12 @@
 #include "level.h"
 
 #include <format>
-#include <global_state.h>
+#include <graphics_old.h>
+#include <player.h>
 #include <string>
 #include <utilities.h>
 
-void load_level(GameState game_state, LevelPosition position) {
+void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position) {
     const std::string filepath_prefix = ASSETS_PATH"images/levels/";
 
     auto [x, y, z] = position;
@@ -22,16 +23,16 @@ void load_level(GameState game_state, LevelPosition position) {
         parse_level(&level_image)
     };
 
-    current_loaded_level = new_level;
+    game_state->loaded_level = std::make_unique<LoadedLevel>(new_level);
 
     UnloadImage(level_image);
 
-    spawn_player();
-    derive_graphics_metrics_from_loaded_level();
+    spawn_player(game_state);
+    derive_graphics_metrics_from_level(game_state->loaded_level);
 }
 
 void unload_level(LoadedLevel *level) {
-    level->world_id;
+    // level->world_id;
 }
 
 
@@ -72,13 +73,8 @@ LevelTile get_tile_from_color(Color color) {
     return AIR;
 }
 
-LoadedLevel *get_current_level() {
-    return &current_loaded_level;
-}
-
-bool is_colliding(Vector2 pos, LevelTile look_for) {
+bool is_colliding(const std::unique_ptr<LoadedLevel> &level, Vector2 pos, LevelTile look_for) {
     Rectangle player_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
-    auto level = get_current_level();
 
     for (size_t row = 0; row < level->rows; ++row) {
         for (size_t column = 0; column < level->columns; ++column) {
@@ -93,9 +89,8 @@ bool is_colliding(Vector2 pos, LevelTile look_for) {
     return false;
 }
 
-int get_collider_tile_index(Vector2 pos, LevelTile look_for) {
+int get_collider_tile_index(const std::unique_ptr<LoadedLevel> &level, Vector2 pos, LevelTile look_for) {
     Rectangle player_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
-    auto level = get_current_level();
 
     for (size_t row = 0; row < level->rows; ++row) {
         for (size_t column = 0; column < level->columns; ++column) {
@@ -111,12 +106,11 @@ int get_collider_tile_index(Vector2 pos, LevelTile look_for) {
     return static_cast<int>(roundf(pos.y) * level->columns + roundf(pos.x));
 }
 
-void set_tile_at_index(int tile_index, LevelTile tile) {
-    auto level = get_current_level();
+void set_tile_at_index(std::unique_ptr<LoadedLevel> &level, int tile_index, LevelTile tile) {
     level->tiles[tile_index] = tile;
 }
 
-LevelTile get_tile_at(int x, int y, LoadedLevel *level) {
+LevelTile get_tile_at(std::unique_ptr<LoadedLevel> &level, int x, int y) {
     if (x < 0 || x >= level->columns ||
         y < 0 || y >= level->rows) {
         return LevelTile::WALL;

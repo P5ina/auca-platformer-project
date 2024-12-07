@@ -9,7 +9,7 @@
 
 #include "raylib.h"
 
-char get_surroundings(unsigned int x, unsigned int y, LoadedLevel *level);
+char get_surroundings(std::unique_ptr<LoadedLevel> &level, int x, int y);
 void draw_wall(Vector2 pos, float size, char surroundings);
 
 #endif //WALL_H

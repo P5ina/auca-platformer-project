@@ -6,11 +6,11 @@
 
 #include <globals.h>
 
-char get_surroundings(unsigned int x, unsigned int y, LoadedLevel *level) {
-    bool top = get_tile_at(x, y - 1, level) == LevelTile::WALL;
-    bool right = get_tile_at(x + 1, y, level) == LevelTile::WALL;
-    bool bottom = get_tile_at(x, y + 1, level) == LevelTile::WALL;
-    bool left = get_tile_at(x - 1, y, level) == LevelTile::WALL;
+char get_surroundings(std::unique_ptr<LoadedLevel> &level, int x, int y) {
+    bool top = get_tile_at(level, x, y - 1) == LevelTile::WALL;
+    bool right = get_tile_at(level, x + 1, y) == LevelTile::WALL;
+    bool bottom = get_tile_at(level, x, y + 1) == LevelTile::WALL;
+    bool left = get_tile_at(level, x - 1, y) == LevelTile::WALL;
 
     return top + (right << 1) + (bottom << 2) + (left << 3);
 }

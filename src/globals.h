@@ -116,21 +116,12 @@ inline size_t game_frame = 0;
 
 // GRAPHICS_H
 
-void derive_graphics_metrics_from_loaded_level();
-void draw_game_overlay();
-void draw_level();
-void draw_player();
-void draw_pause_menu();
-void create_victory_menu_background();
-void animate_victory_menu_background();
-void draw_victory_menu_background();
-void draw_victory_menu();
-
-// PLAYER_H
-
-void spawn_player();
-void move_player_horizontally(float delta);
-void update_player();
+inline void derive_graphics_metrics_from_level(std::unique_ptr<LoadedLevel> &level);
+inline void draw_pause_menu();
+inline void create_victory_menu_background();
+inline void animate_victory_menu_background();
+inline void draw_victory_menu_background();
+inline void draw_victory_menu();
 
 // ASSETS_H
 
