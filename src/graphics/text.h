@@ -7,6 +7,6 @@
 
 #include <globals.h>
 
-void draw_text(Text &text);
+void draw_text(const Text &text);
 
 #endif //TEXT_H

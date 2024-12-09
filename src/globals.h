@@ -14,11 +14,6 @@ const float GRAVITY_FORCE = 0.01f;
 const float JUMP_STRENGTH = 0.3f;
 const float MOVEMENT_SPEED = 0.1f;
 
-inline Vector2 player_pos;
-inline float player_y_velocity = 0;
-
-inline bool is_player_on_ground;
-
 inline int player_score = 0;
 
 /* Graphic Metrics */

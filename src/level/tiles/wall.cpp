@@ -7,10 +7,23 @@
 #include <globals.h>
 
 char get_surroundings(std::unique_ptr<LoadedLevel> &level, int x, int y) {
-    bool top = get_tile_at(level, x, y - 1) == LevelTile::WALL;
-    bool right = get_tile_at(level, x + 1, y) == LevelTile::WALL;
-    bool bottom = get_tile_at(level, x, y + 1) == LevelTile::WALL;
-    bool left = get_tile_at(level, x - 1, y) == LevelTile::WALL;
+    bool top = true;
+    bool right = true;
+    bool bottom = true;
+    bool left = true;
+
+    if (auto top_tile = get_tile(level, { x, y - 1} )) {
+        top = top_tile->type == LevelTileType::WALL;
+    }
+    if (auto right_tile = get_tile(level, { x + 1, y} )) {
+        right = right_tile->type == LevelTileType::WALL;
+    }
+    if (auto bottom_tile = get_tile(level, { x, y + 1} )) {
+        bottom = bottom_tile->type == LevelTileType::WALL;
+    }
+    if (auto left_tile = get_tile(level, { x - 1, y} )) {
+        left = left_tile->type == LevelTileType::WALL;
+    }
 
     return top + (right << 1) + (bottom << 2) + (left << 3);
 }

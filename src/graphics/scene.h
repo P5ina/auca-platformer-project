@@ -8,7 +8,7 @@
 
 struct GameState;
 
-enum Scene {
+enum class Scene {
     MENU_SCENE,
     LEVEL_SCENE,
     END_SCENE,

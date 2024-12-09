@@ -29,33 +29,28 @@ void draw_game_overlay() {
 void draw_level(std::unique_ptr<LoadedLevel> &level) {
     for (size_t row = 0; row < level->rows; ++row) {
         for (size_t column = 0; column < level->columns; ++column) {
-
             Vector2 pos = {
                 shift_to_center.x + static_cast<float>(column) * cell_size,
                 shift_to_center.y + static_cast<float>(row) * cell_size
-        };
+            };
 
-            char cell = level->tiles[row * level->columns + column];
+            LevelTile tile = level->tiles[row * level->columns + column];
             // The first image layer
-            switch (cell) {
-                case AIR:
-                case PLAYER_SPAWN:
-                case COIN:
-                case EXIT:
+            switch (tile.type) {
+                case LevelTileType::AIR:
+                case LevelTileType::PLAYER_SPAWN:
+                case LevelTileType::COIN:
                     draw_air(pos, cell_size);
                 break;
-                case WALL:
+                case LevelTileType::WALL:
                     char surroundings = get_surroundings(level, column, row);
                 draw_wall(pos, cell_size, surroundings);
                 break;
             }
             // The second image layer
-            switch (cell) {
-                case COIN:
+            switch (tile.type) {
+                case LevelTileType::COIN:
                     draw_sprite(coin_sprite, pos, cell_size);
-                break;
-                case EXIT:
-                    draw_image(exit_image, pos, cell_size);
                 break;
                 default:
                     break;
@@ -67,10 +62,10 @@ void draw_level(std::unique_ptr<LoadedLevel> &level) {
 }
 
 void draw_player() {
-    Vector2 pos = {
-        shift_to_center.x + player_pos.x * cell_size,
-        shift_to_center.y + player_pos.y * cell_size
-    };
-
-    draw_sprite(player_sprite, pos, cell_size);
+    // Vector2 pos = {
+    //     shift_to_center.x + player_pos.x * cell_size,
+    //     shift_to_center.y + player_pos.y * cell_size
+    // };
+    //
+    // draw_sprite(player_sprite, pos, cell_size);
 }

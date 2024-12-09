@@ -4,7 +4,7 @@
 
 #include "text.h"
 
-void draw_text(Text &text) {
+void draw_text(const Text &text) {
     Vector2 dimensions = MeasureTextEx(*text.font, text.str.c_str(), text.size * screen_scale, text.spacing);
     Vector2 pos = {
         (screen_size.x * text.position.x) - (0.5f * dimensions.x),

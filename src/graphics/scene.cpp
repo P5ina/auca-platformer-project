@@ -3,20 +3,20 @@
 //
 
 
-#include <globals.h>
-#include <global_state.h>
+#include "scene.h"
 
 #include "text.h"
 #include "scenes/level_scene.h"
 #include "scenes/menu.h"
+#include <global_state.h>
 
 
 void draw_current_scene(const std::unique_ptr<GameState> &game_state) {
     switch (game_state->scene) {
-        case MENU_SCENE:
+        case Scene::MENU_SCENE:
             draw_menu();
             break;
-        case LEVEL_SCENE:
+        case Scene::LEVEL_SCENE:
             draw_level(game_state->loaded_level);
             draw_game_overlay();
             break;
@@ -26,12 +26,12 @@ void draw_current_scene(const std::unique_ptr<GameState> &game_state) {
     }
 }
 
-Text placeholder_text = {
-    "Work in progress",
-    {0.5f, 0.5f},
-};
 
 void draw_placeholder_scene() {
+    const Text placeholder_text = {
+        "Work in progress",
+        {0.5f, 0.5f},
+    };
     draw_text(placeholder_text);
 }
 

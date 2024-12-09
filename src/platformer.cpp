@@ -1,33 +1,17 @@
 #include <global_state.h>
+#include <input.h>
+#include <characters/player.h>
 #include <graphics/scene.h>
+#include <old_assets.h>
 
 #include "raylib.h"
 
 #include "globals.h"
-#include "player.h"
-#include "graphics_old.h"
-#include "old_assets.h"
-#include "utilities.h"
-#include "graphics/scenes/menu.h"
 
 void update_game(std::unique_ptr<GameState> &game_state) {
     game_frame++;
 
-    // TODO
-
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        move_player_horizontally(game_state, MOVEMENT_SPEED);
-    }
-
-    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        move_player_horizontally(game_state, -MOVEMENT_SPEED);
-    }
-
-    // Calculating collisions to decide whether the player is allowed to jump: don't want them to suction cup to the ceiling or jump midair
-    is_player_on_ground = is_colliding(game_state->loaded_level, {player_pos.x, player_pos.y + 0.1f}, WALL);
-    if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_SPACE)) && is_player_on_ground) {
-        player_y_velocity = -JUMP_STRENGTH;
-    }
+    GameInput inputs = read_game_input();
 
     update_player(game_state);
 }
@@ -40,6 +24,9 @@ void draw_game(std::unique_ptr<GameState> &game_state) {
 }
 
 int main() {
+    const float PHYSICS_DELTA_TIME = 1.0f / 60.0f;
+    const int PHYSICS_SUB_STEP = 4;
+
     InitWindow(1024, 480, "Platformer");
     SetTargetFPS(60);
 
@@ -63,6 +50,7 @@ int main() {
         EndDrawing();
     }
 
+    unload_level(game_state);
     unload_sounds();
     unload_images();
     unload_fonts();
