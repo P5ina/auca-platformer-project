@@ -27,7 +27,7 @@ int main() {
     const float PHYSICS_DELTA_TIME = 1.0f / 60.0f;
     const int PHYSICS_SUB_STEP = 4;
 
-    InitWindow(1024, 480, "Platformer");
+    InitWindow(1280, 720, "Platformer");
     SetTargetFPS(60);
 
     load_fonts();

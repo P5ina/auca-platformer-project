@@ -18,10 +18,6 @@ inline int player_score = 0;
 
 /* Graphic Metrics */
 
-const float CELL_SCALE = 0.8f; // An aesthetic parameter to add some negative space around level
-const float SCREEN_SCALE_DIVISOR = 700.0f; // The divisor was found through experimentation
-                                           // to scale things accordingly to look pleasant.
-
 inline Vector2 screen_size;
 inline float screen_scale; // Used to scale str/UI components size and displacements based on the screen_size size
 inline float cell_size;

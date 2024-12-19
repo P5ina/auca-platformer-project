@@ -14,11 +14,11 @@ inline void derive_graphics_metrics_from_level(std::unique_ptr<Level> &level) {
     cell_size = std::min(
         screen_size.x / static_cast<float>(level->columns),
         screen_size.y / static_cast<float>(level->rows)
-    ) * CELL_SCALE;
+    );
     screen_scale = std::min(
         screen_size.x,
         screen_size.y
-    ) / SCREEN_SCALE_DIVISOR;
+    );
     float level_width  = static_cast<float>(level->columns) * cell_size;
     float level_height = static_cast<float>(level->rows)    * cell_size;
     shift_to_center.x = (screen_size.x - level_width) * 0.5f;
