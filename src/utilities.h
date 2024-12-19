@@ -19,4 +19,6 @@ float rand_from_to(float from, float to);
 float rand_up_to(float to);
 Color get_color_from_hex(const std::string& hex);
 
+Vector2i vector2i_add(Vector2i v1, Vector2i v2);
+
 #endif // UTILITIES_H

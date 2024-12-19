@@ -8,6 +8,7 @@
 struct GameInput {
     float horizontal_movement;
     bool jump;
+    bool toggle_debug_mode;
 };
 
 GameInput read_game_input();

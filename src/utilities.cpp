@@ -30,3 +30,7 @@ Color get_color_from_hex(const std::string& hex_string) {
     unsigned int hex_value = stoul(pure_hex_string, nullptr, 16);
     return GetColor(hex_value);
 }
+
+Vector2i vector2i_add(Vector2i v1, Vector2i v2) {
+    return { v1.x + v2.x, v1.y + v2.y };
+}

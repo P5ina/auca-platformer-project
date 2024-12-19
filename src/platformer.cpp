@@ -8,12 +8,12 @@
 
 #include "globals.h"
 
-void update_game(std::unique_ptr<GameState> &game_state) {
+void update_game(std::unique_ptr<GameState> &game_state, float delta) {
     game_frame++;
 
-    GameInput inputs = read_game_input();
+    std::unique_ptr<GameInput> inputs = std::make_unique<GameInput>(read_game_input());
 
-    update_player(game_state);
+    update_player(game_state.get(), inputs.get(), delta);
 }
 
 void draw_game(std::unique_ptr<GameState> &game_state) {
@@ -44,7 +44,10 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
 
-        update_game(game_state);
+        update_game(game_state, PHYSICS_DELTA_TIME);
+        if (game_state != nullptr && game_state->loaded_level != nullptr) {
+            b2World_Step(game_state->loaded_level->world_id, PHYSICS_DELTA_TIME, PHYSICS_SUB_STEP);
+        }
         draw_game(game_state);
 
         EndDrawing();

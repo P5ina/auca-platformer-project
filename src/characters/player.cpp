@@ -5,26 +5,51 @@
 #include "player.h"
 
 #include <globals.h>
+#include <iostream>
+#include <sys/stat.h>
 
 #include "box2d/box2d.h"
 
 void spawn_player(std::unique_ptr<GameState> &game_state) {
-    // const std::unique_ptr<LoadedLevel> &level = game_state->loaded_level;
-    //
-    // for (size_t row = 0; row < level->rows; ++row) {
-    //     for (size_t column = 0; column < level->columns; ++column) {
-    //         LevelTile tile = level->tiles[row * level->columns + column];
-    //         if (tile.type == PLAYER_SPAWN) {
-    //             player_pos.x = static_cast<float>(column);
-    //             player_pos.y = static_cast<float>(row);
-    //             return;
-    //         }
-    //     }
-    // }
+    const std::unique_ptr<Level> &level = game_state->loaded_level;
+
+    for (size_t row = 0; row < level->rows; ++row) {
+        for (size_t column = 0; column < level->columns; ++column) {
+            LevelTile tile = level->tiles[row * level->columns + column];
+            if (tile.type == LevelTileType::PLAYER_SPAWN) {
+                b2BodyDef player_body_def = b2DefaultBodyDef();
+                player_body_def.type = b2_dynamicBody;
+                player_body_def.position = {static_cast<float>(column) + 0.5f, static_cast<float>(row) - 0.5f};
+                player_body_def.fixedRotation = true;
+                b2BodyId player_body_id = b2CreateBody(game_state->loaded_level->world_id, &player_body_def);
+
+                b2ShapeDef shape_def = b2DefaultShapeDef();
+                shape_def.density = 10.0f; // kg/m^2
+                //shape_def.friction = 0.0f;
+                const float height = 0.9f;
+                const float radius = 0.3f;
+                b2Capsule collider = {
+                    .center1 = {0, 0.5f - radius},
+                    .center2 = {0, 0.5f - height + radius },
+                    .radius = radius
+                };
+                // b2Circle collider = {
+                //     .center = {0, 0},
+                //     .radius = 0.5f
+                // };
+                b2CreateCapsuleShape(player_body_id, &shape_def, &collider);
+
+                game_state->player = std::make_unique<Player>(Player{
+                    .body_id = player_body_id
+                });
+                return;
+            }
+        }
+    }
 }
 
 void despawn_player(std::unique_ptr<GameState> &game_state) {
-
+    // TODO: Deallocate player
 }
 
 
@@ -37,13 +62,23 @@ void move_player_horizontally(std::unique_ptr<GameState> &game_state, float delt
     // }
 }
 
-void update_player(std::unique_ptr<GameState> &game_state) {
+void update_player(GameState *game_state, GameInput *game_input, float delta) {
+    const float movement_speed = 5.0f;
+    const float jump_force = -12.0f;
+    const float jump_cooldown = 0.2f;
 
-    // is_player_on_ground = is_colliding(game_state->loaded_level, {player_pos.x, player_pos.y + 0.1f}, WALL);
-    // if (is_player_on_ground) {
-    //     player_y_velocity = 0;
-    //     player_pos.y = roundf(player_pos.y);
-    // }
+    b2Vec2 velocity = b2Body_GetLinearVelocity(game_state->player->body_id);
+    velocity.x = game_input->horizontal_movement * movement_speed;
+
+    game_state->player->jump_timer += delta;
+
+    bool g = is_grounded(game_state->loaded_level->world_id, game_state->player);
+    if (g && game_input->jump && game_state->player->jump_timer >= jump_cooldown) {
+        game_state->player->jump_timer = 0;
+        velocity.y = jump_force;
+    }
+
+    b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
 
     // if (is_colliding(game_state->loaded_level, player_pos, COIN)) {
     //     int index = get_collider_tile_index(game_state->loaded_level, player_pos, COIN);
@@ -56,23 +91,12 @@ void update_player(std::unique_ptr<GameState> &game_state) {
     // }
 }
 
-struct GroundRayCastContext {
-    bool is_ground;
-};
-
-float grounded_cast_callback(b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction,
-                             std::unique_ptr<GroundRayCastContext> context) {
-    context->is_ground = b2Shape_GetFilter(shapeId).categoryBits == static_cast<uint32_t>(PhysicsCategories::WALL);
-    if (context->is_ground)
-        return 0.0f;
-
-    return fraction;
-}
-
 bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
-    GroundRayCastContext context;
     b2Vec2 origin = b2Body_GetPosition(player->body_id);
-    b2Vec2 direction = b2Vec2 { 0.0f, 0.1f };
-    // TODO: Check for grounding
-    return false;
+    b2Vec2 direction = b2Vec2{0.0f, 0.6f};
+    b2QueryFilter filter = b2DefaultQueryFilter();
+    filter.maskBits = static_cast<uint32_t>(PhysicsCategories::WALL);
+    b2RayResult result = b2World_CastRayClosest(world_id, origin, direction, filter);
+
+    return result.hit;
 }

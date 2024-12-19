@@ -23,13 +23,13 @@ struct LevelPosition {
 
 void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position);
 void unload_level(std::unique_ptr<GameState> &game_state);
-LoadedLevel parse_level(const Image *image);
-LevelTileType create_tile_type(Color color);
-LevelTile create_tile(b2WorldId world_id, LevelTileType type, Vector2i position);
+std::unique_ptr<Level> parse_level(const Image *image);
+LevelTile create_level_tile(Color color, Vector2i position);
 
-void set_tile(std::unique_ptr<LoadedLevel> &level, LevelTile tile, Vector2i position);
-void set_tile(std::unique_ptr<LoadedLevel> &level, LevelTile tile, int tile_index);
-std::optional<LevelTile> get_tile(std::unique_ptr<LoadedLevel> &level, Vector2i position);
-std::optional<LevelTile> get_tile(std::unique_ptr<LoadedLevel> &level, int tile_index);
+void set_tile(std::unique_ptr<Level> &level, LevelTile tile, Vector2i position);
+void set_tile(std::unique_ptr<Level> &level, LevelTile tile, int tile_index);
+std::optional<LevelTile> get_tile(Level *level, Vector2i position);
+std::optional<LevelTile> get_tile(Level *level, int tile_index);
+std::optional<int> get_tile_index(Level *level, Vector2i position);
 
 #endif //LEVEL_H

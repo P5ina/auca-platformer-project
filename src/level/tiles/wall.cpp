@@ -6,11 +6,35 @@
 
 #include <globals.h>
 
-char get_surroundings(std::unique_ptr<LoadedLevel> &level, int x, int y) {
+char get_surroundings(Level *level, int x, int y) {
     bool top = true;
     bool right = true;
     bool bottom = true;
     bool left = true;
+
+    if (auto top_tile = get_tile(level, { x, y - 1} )) {
+        top = top_tile->type == LevelTileType::WALL;
+    }
+    if (auto right_tile = get_tile(level, { x + 1, y} )) {
+        right = right_tile->type == LevelTileType::WALL;
+    }
+    if (auto bottom_tile = get_tile(level, { x, y + 1} )) {
+        bottom = bottom_tile->type == LevelTileType::WALL;
+    }
+    if (auto left_tile = get_tile(level, { x - 1, y} )) {
+        left = left_tile->type == LevelTileType::WALL;
+    }
+
+    return top + (right << 1) + (bottom << 2) + (left << 3);
+}
+
+char get_surroundings_without_borders(Level *level, Vector2i position) {
+    int x = position.x;
+    int y = position.y;
+    bool top = false;
+    bool right = false;
+    bool bottom = false;
+    bool left = false;
 
     if (auto top_tile = get_tile(level, { x, y - 1} )) {
         top = top_tile->type == LevelTileType::WALL;

@@ -7,6 +7,7 @@
 #include <format>
 #include <global_state.h>
 #include <graphics_old.h>
+#include <iostream>
 #include <string>
 #include <utilities.h>
 #include <characters/player.h>
@@ -20,8 +21,8 @@ void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position) 
     std::string filepath = std::format("{}level_{}_{}_{}.png", filepath_prefix, x, y, z);
     Image level_image = LoadImage(filepath.c_str());
 
-    LoadedLevel new_level = parse_level(&level_image);
-    game_state->loaded_level = std::make_unique<LoadedLevel>(new_level);
+    std::unique_ptr<Level> new_level = parse_level(&level_image);
+    game_state->loaded_level = std::move(new_level);
 
     UnloadImage(level_image);
 
@@ -36,88 +37,202 @@ void unload_level(std::unique_ptr<GameState> &game_state) {
     game_state->loaded_level = nullptr;
 }
 
+b2ChainDef create_wall_chain(Level *level, Vector2i start_position) {
+    Vector2i next_position = start_position;
 
-LoadedLevel parse_level(const Image *image) {
-    int width = image->width;
-    int height = image->height;
+    const Vector2i LOOK_OFFSET[4] = {
+        { -1, -1 },
+        { 0, -1 },
+        { 0, 0 },
+        { -1, 0 },
+    };
+    const Vector2i MOVE_DIRECTION[4] = {
+        { 0, -1 },
+        { 1, 0 },
+        { 0, 1 },
+        { -1, 0 },
+    };
+    int direction = 1;
 
-    b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = {0.0f, -10.0f};
-    b2WorldId worldId = b2CreateWorld(&worldDef);
+    b2ChainDef chain_def = b2DefaultChainDef();
+    chain_def.isLoop = true;
+
+    std::vector<Vector2i> points;
+
+    do {
+        points.push_back(next_position);
+        Vector2i left_pos = vector2i_add(next_position, LOOK_OFFSET[direction]);
+        Vector2i right_pos = vector2i_add(next_position, LOOK_OFFSET[(direction + 1) % 4]);
+        bool has_left = false;
+        bool has_right = false;
+
+        if (auto left_tile = get_tile(level, left_pos)) {
+            has_left = left_tile->type == LevelTileType::WALL;
+        }
+        if (auto right_tile = get_tile(level, right_pos)) {
+            has_right = right_tile->type == LevelTileType::WALL;
+        }
+
+        if (has_left) {
+            direction = (direction - 1 + 4) % 4;
+        }
+        else if (has_right) {
+            // direction is the same
+            // direction = direction;
+        }
+        else {
+            direction = (direction + 1) % 4;
+        }
+        next_position = vector2i_add(next_position, MOVE_DIRECTION[direction]);
+    } while (next_position.x != start_position.x || next_position.y != start_position.y);
+
+    chain_def.count = points.size();
+    b2Vec2* raw_points = new b2Vec2[points.size()];
+    for (int i = 0; i < points.size(); i++) {
+        raw_points[i] = b2Vec2 {
+            static_cast<float>(points[i].x),
+            static_cast<float>(points[i].y)
+        };
+    }
+    chain_def.points = raw_points;
+    return chain_def;
+}
+
+void create_level_collisions(Level *level) {
+    int width = level->columns;
+    int height = level->rows;
+
+    std::vector<Vector2i> starting_points;
+    std::vector<bool> visited_tiles(width * height);
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            auto start_tile = get_tile(level, { x, y });
+            if (start_tile->type != LevelTileType::WALL) {
+                continue;
+            }
+            bool is_visited = visited_tiles[y * width + x];
+
+            if (is_visited) {
+                continue;
+            }
+
+            std::queue<Vector2i> next_position;
+            next_position.push({x, y});
+
+            while (!next_position.empty()) {
+                auto new_position = next_position.front();
+                next_position.pop();
+                auto new_tile = get_tile(level, new_position);
+
+                if (new_tile.has_value() &&
+                    new_tile->type == LevelTileType::WALL &&
+                    !visited_tiles[new_position.y * width + new_position.x]) {
+
+                    visited_tiles[new_position.y * width + new_position.x] = true;
+
+                    next_position.push({new_position.x + 1, new_position.y});
+                    next_position.push({new_position.x, new_position.y - 1});
+                    next_position.push({new_position.x - 1, new_position.y});
+                    next_position.push({new_position.x, new_position.y + 1});
+                    }
+            }
+
+            b2BodyDef wall_body_def = b2DefaultBodyDef();
+            b2BodyId wall_body_id = b2CreateBody(level->world_id, &wall_body_def);
+
+            b2ChainDef chain_def = create_wall_chain(level, { x, y });
+            chain_def.filter.categoryBits = static_cast<uint32_t>(PhysicsCategories::WALL);
+
+            auto chain_id = b2CreateChain(wall_body_id, &chain_def);
+            std::cout << b2Chain_IsValid(chain_id) << "\n";
+            level->wall_bodies.push_back(wall_body_id);
+        }
+    }
+}
+
+std::unique_ptr<Level> parse_level(const Image *image) {
+    const int width = image->width;
+    const int height = image->height;
+
+    b2WorldDef world_def = b2DefaultWorldDef();
+    world_def.gravity = {0.0f, 20.0f};
+    const b2WorldId world_id = b2CreateWorld(&world_def);
 
     std::vector<LevelTile> tiles(height * width);
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             Color tile_color = GetImageColor(*image, x, y);
-            LevelTileType tileType = create_tile_type(tile_color);
-            tiles[y * width + x] = create_tile(worldId, tileType, { x, y });
+            LevelTile tile = create_level_tile(tile_color, {x, y});
+            tiles[y * width + x] = tile;
         }
     }
 
-    return LoadedLevel{
-        height,
-        width,
-        worldId,
-        tiles
-    };
+    auto level = std::make_unique<Level>(Level{
+        .rows = height,
+        .columns = width,
+        .world_id = world_id,
+        .tiles = tiles,
+        .wall_bodies = std::vector<b2BodyId>()
+    });
+
+    // Calculate shapes for walls
+    create_level_collisions(level.get());
+
+    return level;
 }
 
 // Could be done using dictionaries
-LevelTileType create_tile_type(Color color) {
+LevelTile create_level_tile(Color color, Vector2i position) {
+    LevelTileType type = LevelTileType::AIR;
+
     if (ColorIsEqual(color, get_color_from_hex(AIR_COLOR))) {
-        return LevelTileType::AIR;
+        type = LevelTileType::AIR;
     }
     if (ColorIsEqual(color, get_color_from_hex(WALL_COLOR))) {
-        return LevelTileType::WALL;
+        type = LevelTileType::WALL;
     }
     if (ColorIsEqual(color, get_color_from_hex(PLAYER_SPAWN_COLOR))) {
-        return LevelTileType::PLAYER_SPAWN;
+        type = LevelTileType::PLAYER_SPAWN;
     }
     if (ColorIsEqual(color, get_color_from_hex(COIN_COLOR))) {
-        return LevelTileType::COIN;
+        type = LevelTileType::COIN;
     }
-    return LevelTileType::AIR;
+
+    return LevelTile{
+        .position = position,
+        .type = type,
+    };
 }
 
-LevelTile create_tile(b2WorldId world_id, LevelTileType type, Vector2i position) {
-    switch (type) {
-        case LevelTileType::WALL: {
-            // TODO: Create static body
-            b2BodyDef wall_body_def = b2DefaultBodyDef();
-            wall_body_def.position = { position.x + 0.5f, position.y + 0.5f };
-            b2BodyId wall_body_id = b2CreateBody(world_id, &wall_body_def);
-            b2Polygon wall_box = b2MakeBox(0.5f, 0.5f);
-            b2ShapeDef wall_shape_def = b2DefaultShapeDef();
-            b2CreatePolygonShape(wall_body_id, &wall_shape_def, &wall_box);
-            return LevelTile {
-                type,
-                wall_body_id
-            };
-        }
-        case LevelTileType::PLAYER_SPAWN:
-        case LevelTileType::AIR:
-        case LevelTileType::COIN: {
-            return {
-                type,
-                {}
-            };
-        }
-    }
-}
-
-void set_tile(std::unique_ptr<LoadedLevel> &level, LevelTile tile, Vector2i position) {
+void set_tile(std::unique_ptr<Level> &level, LevelTile tile, Vector2i position) {
     set_tile(level, tile, position.x + position.y * level->columns);
 }
 
-void set_tile(std::unique_ptr<LoadedLevel> &level, LevelTile tile, int tile_index) {
+void set_tile(std::unique_ptr<Level> &level, LevelTile tile, int tile_index) {
     level->tiles[tile_index] = tile;
 }
 
-std::optional<LevelTile> get_tile(std::unique_ptr<LoadedLevel> &level, Vector2i position) {
+std::optional<LevelTile> get_tile(Level *level, Vector2i position) {
     if (position.x < 0 || position.x >= level->columns ||
         position.y < 0 || position.y >= level->rows) {
         return {};
     }
     return level->tiles[position.x + position.y * level->columns];
 }
+
+std::optional<LevelTile> get_tile(Level *level, int tile_index) {
+    if (tile_index < 0 || tile_index >= level->columns * level->rows)
+        return {};
+    return level->tiles[tile_index];
+}
+
+std::optional<int> get_tile_index(Level *level, Vector2i position) {
+    if (position.x < 0 || position.x >= level->columns ||
+        position.y < 0 || position.y >= level->rows) {
+        return {};
+    }
+    return position.x + position.y * level->columns;
+}
+

@@ -111,7 +111,7 @@ inline size_t game_frame = 0;
 
 // GRAPHICS_H
 
-inline void derive_graphics_metrics_from_level(std::unique_ptr<LoadedLevel> &level);
+inline void derive_graphics_metrics_from_level(std::unique_ptr<Level> &level);
 inline void draw_pause_menu();
 inline void create_victory_menu_background();
 inline void animate_victory_menu_background();

@@ -11,13 +11,13 @@
 #include <global_state.h>
 
 
-void draw_current_scene(const std::unique_ptr<GameState> &game_state) {
+void draw_current_scene(std::unique_ptr<GameState> &game_state) {
     switch (game_state->scene) {
         case Scene::MENU_SCENE:
             draw_menu();
             break;
         case Scene::LEVEL_SCENE:
-            draw_level(game_state->loaded_level);
+            draw_level(game_state);
             draw_game_overlay();
             break;
         default:

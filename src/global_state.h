@@ -6,6 +6,7 @@
 #define GLOBAL_STATE_H
 #include <memory>
 #include <optional>
+#include <utilities.h>
 #include <vector>
 #include <graphics/scene.h>
 
@@ -13,6 +14,7 @@
 
 struct Player {
     b2BodyId body_id;
+    float jump_timer;
 };
 
 enum class LevelTileType {
@@ -23,21 +25,23 @@ enum class LevelTileType {
 };
 
 struct LevelTile {
+    Vector2i position;
     LevelTileType type;
-    std::optional<b2BodyId> body_id;
 };
 
-struct LoadedLevel {
+struct Level {
     int rows;
     int columns;
     b2WorldId world_id;
     std::vector<LevelTile> tiles;
+    std::vector<b2BodyId> wall_bodies;
 };
 
 struct GameState {
     Scene scene = Scene::MENU_SCENE;
-    std::unique_ptr<LoadedLevel> loaded_level;
+    std::unique_ptr<Level> loaded_level;
     std::unique_ptr<Player> player;
+    bool debug_mode;
     // TODO: Assets
     // Assets assets;
 };

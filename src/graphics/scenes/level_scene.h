@@ -7,8 +7,8 @@
 #include <memory>
 #include <level/level.h>
 
-void draw_player();
-void draw_level(std::unique_ptr<LoadedLevel> &level);
+void draw_player(std::unique_ptr<GameState> &game_state);
+void draw_level(std::unique_ptr<GameState> &game_state);
 void draw_game_overlay();
 
 #endif //LEVEL_SCENE_H

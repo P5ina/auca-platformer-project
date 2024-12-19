@@ -14,7 +14,7 @@ enum class Scene {
     END_SCENE,
 };
 
-void draw_current_scene(const std::unique_ptr<GameState> &game_state);
+void draw_current_scene(std::unique_ptr<GameState> &game_state);
 void draw_placeholder_scene();
 
 #endif //SCENE_H

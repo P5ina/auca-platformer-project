@@ -7,7 +7,7 @@
 #include <level/tiles/air.h>
 #include <level/tiles/wall.h>
 
-inline void derive_graphics_metrics_from_level(std::unique_ptr<LoadedLevel> &level) {
+inline void derive_graphics_metrics_from_level(std::unique_ptr<Level> &level) {
     screen_size.x  = static_cast<float>(GetScreenWidth());
     screen_size.y = static_cast<float>(GetScreenHeight());
 
