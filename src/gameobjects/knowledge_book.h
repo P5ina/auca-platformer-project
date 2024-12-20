@@ -11,13 +11,6 @@
 
 #include "raylib.h"
 
-struct KnowledgeBook {
-    LevelPosition level_position;
-    Vector2 position;
-    std::string tip_text;
-    bool isCollected = false;
-};
-
 const std::vector knowledge_books = {
     KnowledgeBook {
         .level_position = { 0, 0, 0 },

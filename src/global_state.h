@@ -11,6 +11,17 @@
 
 #include "box2d/id.h"
 
+struct LevelPosition {
+    int x, y, z;
+};
+
+struct KnowledgeBook {
+    LevelPosition level_position;
+    Vector2 position;
+    std::string tip_text;
+    bool isCollected = false;
+};
+
 struct Player {
     b2BodyId body_id;
     float jump_timer;
@@ -33,6 +44,7 @@ struct Level {
     b2WorldId world_id;
     std::vector<LevelTile> tiles;
     std::vector<b2BodyId> wall_bodies;
+    std::vector<KnowledgeBook> books;
 };
 
 struct MainMenuState {
@@ -45,6 +57,7 @@ struct GameState {
     Scene scene = Scene::MENU_SCENE;
     std::unique_ptr<Level> loaded_level;
     std::unique_ptr<Player> player;
+    Vector2i last_resolution;
     bool debug_mode = false;
     MainMenuState main_menu_state;
     // TODO: Assets

@@ -9,6 +9,7 @@ struct GameInput {
     float horizontal_movement;
     bool jump;
     bool toggle_debug_mode;
+    bool toggle_full_screen;
 };
 
 GameInput read_game_input();

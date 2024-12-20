@@ -82,7 +82,7 @@ void draw_level(std::unique_ptr<GameState> &game_state) {
                 Vector2 n = { pos2.y - pos1.y, pos1.x - pos2.x };
 
                 DrawLineEx(pos1, pos2, 1, RED);
-                DrawLineEx(center, Vector2Add(center, Vector2Scale(n, 0.5f)), 0.5f, BLUE);
+                DrawLineEx(center, Vector2Add(center, Vector2Scale(n, 0.5f)), 1.0f, BLUE);
 
                 Vector2 tri1 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, -0.1f));
                 Vector2 tri3 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, 0.1f));

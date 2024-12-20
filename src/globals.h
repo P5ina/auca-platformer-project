@@ -78,6 +78,10 @@ struct Sprite {
 inline Sprite coin_sprite;
 inline Sprite player_sprite;
 
+/* Shaders */
+
+inline Shader crt_shader;
+
 /* Sounds */
 
 inline Sound coin_sound;
@@ -115,6 +119,9 @@ inline void draw_victory_menu_background();
 inline void draw_victory_menu();
 
 // ASSETS_H
+
+void load_shaders();
+void unload_shaders();
 
 void load_fonts();
 void unload_fonts();

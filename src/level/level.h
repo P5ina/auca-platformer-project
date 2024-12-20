@@ -15,10 +15,6 @@
 const std::string AIR_COLOR = "#000000";
 const std::string WALL_COLOR = "#ffffff";
 
-struct LevelPosition {
-    int x, y, z;
-};
-
 void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position);
 void unload_level(std::unique_ptr<GameState> &game_state);
 std::unique_ptr<Level> parse_level(const Image *image);

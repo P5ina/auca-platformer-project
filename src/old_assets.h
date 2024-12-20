@@ -6,6 +6,16 @@
 
 #include <string>
 #include <cassert>
+#include <iostream>
+
+void load_shaders() {
+    crt_shader = LoadShader(nullptr, ASSETS_PATH"shaders/crt.frag");
+    std::cout << "Shader valid: " << IsShaderValid(crt_shader) << std::endl;
+}
+
+void unload_shaders() {
+    UnloadShader(crt_shader);
+}
 
 void load_fonts() {
     menu_font = LoadFontEx(ASSETS_PATH"fonts/easvhs.ttf", 64, nullptr, 128);
