@@ -4,18 +4,37 @@
 
 #include "dialogue.h"
 
-void start_dialogue(GameState* game_state, std::unique_ptr<Dialogue> dialogue) {
-    game_state->loaded_dialogue = std::move(dialogue);
+#include <assets.h>
+
+#include "raylib.h"
+
+void update_dialogue(Dialogue *dialogue, GameInput *game_input) {
+    const float CHAR_DURATION = 0.1f;
+    const float CHAR_DOT_DURATION = 0.3f;
+    const int SOUND_PER_CHAR = 3;
+
+    dialogue->last_update += GetFrameTime();
 }
 
-void update_dialogue(GameState* game_state, GameInput* game_input) {
+void draw_dialogue(Dialogue *dialogue, Assets* assets) {
+    // if (dialogue == nullptr)
+    //     return;
 
-}
-
-void draw_dialogue(GameState* game_state) {
-    if (game_state->loaded_dialogue == nullptr)
-        return;
+    Texture2D texture = *assets->images->dialogue_panel_texture;
+    float x_offset = 120.0f;
+    float y_offset = 80.0f;
 
     const float HEIGHT_PERCENT = 0.3f;
-
+    auto nine_patch_info = NPatchInfo {
+        .layout = NPatchLayout::NPATCH_NINE_PATCH,
+        .source = Rectangle { 0.0f, 0.0f, static_cast<float>(texture.width), static_cast<float>(texture.height) },
+        .top = 8 * 8,
+        .bottom = 8 * 8,
+        .left = 8 * 8,
+        .right = 8 * 8,
+    };
+    auto dest = Rectangle {
+        x_offset, y_offset,
+        static_cast<float>(GetScreenWidth()) - 2 * x_offset, static_cast<float>(GetScreenHeight()) * HEIGHT_PERCENT };
+    DrawTextureNPatch(texture, nine_patch_info, dest, { 0.0f, 0.0f }, 0.0f, Fade(WHITE, 0.8f));
 }

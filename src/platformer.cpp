@@ -12,7 +12,7 @@
 void update_game(std::unique_ptr<GameState> &game_state, float delta) {
     game_frame++;
 
-    std::unique_ptr<GameInput> inputs = std::make_unique<GameInput>(read_game_input());
+    const auto inputs = std::make_unique<GameInput>(read_game_input());
 
     if (inputs->toggle_debug_mode) {
         game_state->debug_mode = !game_state->debug_mode;
@@ -81,7 +81,7 @@ int main() {
     });
 
     load_fonts();
-    load_images(game_state->assets.get());
+    game_state->assets->images = load_images();
     load_shaders();
     load_sounds();
     load_level(game_state, LevelPosition { 0, 0, 0 });
@@ -101,7 +101,7 @@ int main() {
     UnloadRenderTexture(target);
     unload_level(game_state);
     unload_sounds();
-    unload_images(game_state->assets.get());
+    unload_images(std::move(game_state->assets->images)) ;
     unload_shaders();
     unload_fonts();
 

@@ -4,20 +4,22 @@
 
 #ifndef ASSETS_H
 #define ASSETS_H
+#include <memory>
+
 #include "raylib.h"
 
 struct AssetImages {
-    Texture2D dialogue_panel_texture;
-    Texture2D wall_texture;
-    Texture2D air_texture;
-    Texture2D player_texture;
+    std::unique_ptr<Texture2D> dialogue_panel_texture;
+    std::unique_ptr<Texture2D> wall_texture;
+    std::unique_ptr<Texture2D> air_texture;
+    std::unique_ptr<Texture2D> player_texture;
 };
 
 struct Assets {
-    AssetImages images;
+    std::unique_ptr<AssetImages> images;
 };
 
-void load_images(Assets* assets);
-void unload_images(Assets* assets);
+std::unique_ptr<AssetImages> load_images();
+void unload_images(std::unique_ptr<AssetImages> asset_images);
 
 #endif //ASSETS_H

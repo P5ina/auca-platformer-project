@@ -4,11 +4,18 @@
 
 #ifndef DIALOGUE_H
 #define DIALOGUE_H
-#include <global_state.h>
+#include <assets.h>
 #include <input.h>
+#include <vector>
 
-void start_dialogue(GameState* game_state, Dialogue* dialogue);
-void update_dialogue(GameState* game_state, GameInput* game_input);
-void draw_dialogue(GameState* game_state);
+struct Dialogue {
+    std::vector<std::string> lines;
+    float last_update = 0;
+    int current_line = 0;
+    int current_line_progress = 0;
+};
+
+void update_dialogue(Dialogue *dialogue, GameInput* game_input);
+void draw_dialogue(Dialogue *dialogue, Assets* assets);
 
 #endif //DIALOGUE_H

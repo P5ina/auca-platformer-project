@@ -9,6 +9,7 @@
 #include <utilities.h>
 #include <vector>
 #include <graphics/scene.h>
+#include <graphics/scenes/dialogue.h>
 
 #include "box2d/id.h"
 
@@ -21,13 +22,6 @@ struct KnowledgeBook {
     Vector2 position;
     std::string tip_text;
     bool isCollected = false;
-};
-
-struct Dialogue {
-    std::vector<std::string> lines;
-    float last_update = 0;
-    int current_line = 0;
-    int current_progress = 0;
 };
 
 struct Player {

@@ -118,5 +118,5 @@ void draw_player(Player *player, Assets *assets) {
         }
     }
     Rectangle source = { frame_x * 8.0f, frame_y * 8.0f, 8.0f, 8.0f };
-    DrawTexturePro(assets->images.player_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+    DrawTexturePro(*assets->images->player_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
 }
