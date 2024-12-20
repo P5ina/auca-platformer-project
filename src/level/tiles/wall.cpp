@@ -52,7 +52,7 @@ char get_surroundings_without_borders(Level *level, Vector2i position) {
     return top + (right << 1) + (bottom << 2) + (left << 3);
 }
 
-void draw_wall(Vector2 pos, float size, char surroundings) {
+void draw_wall(Vector2 pos, float size, char surroundings, Assets* assets) {
     const unsigned int surroundings_mappings[16] = {
         0, 12, 1, 13, 4, 8, 5, 9, 3, 15, 2, 14, 7, 11, 6, 10
     };
@@ -62,6 +62,6 @@ void draw_wall(Vector2 pos, float size, char surroundings) {
     float source_y = static_cast<float>(source_index / 4) * 8.0f;
     Rectangle source = { source_x, source_y, 8.0f, 8.0f };
     Rectangle destination = { pos.x, pos.y, size, size };
-    DrawTexturePro(wall_image, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+    DrawTexturePro(assets->images.wall_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
 }
 

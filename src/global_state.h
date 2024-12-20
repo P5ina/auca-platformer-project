@@ -4,6 +4,7 @@
 
 #ifndef GLOBAL_STATE_H
 #define GLOBAL_STATE_H
+#include <assets.h>
 #include <memory>
 #include <utilities.h>
 #include <vector>
@@ -20,6 +21,13 @@ struct KnowledgeBook {
     Vector2 position;
     std::string tip_text;
     bool isCollected = false;
+};
+
+struct Dialogue {
+    std::vector<std::string> lines;
+    float last_update = 0;
+    int current_line = 0;
+    int current_progress = 0;
 };
 
 struct Player {
@@ -57,12 +65,12 @@ struct MainMenuState {
 struct GameState {
     Scene scene = Scene::MENU_SCENE;
     std::unique_ptr<Level> loaded_level;
+    std::unique_ptr<Dialogue> loaded_dialogue;
     std::unique_ptr<Player> player;
+    std::unique_ptr<Assets> assets;
     Vector2i last_resolution;
     bool debug_mode = false;
     MainMenuState main_menu_state;
-    // TODO: Assets
-    // Assets assets;
 };
 
 #endif //GLOBAL_STATE_H

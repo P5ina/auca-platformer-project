@@ -58,25 +58,6 @@ inline Text victory_subtitle = {
     { 0.50f, 0.65f }
 };
 
-/* Images and Sprites */
-
-inline Texture2D wall_image;
-inline Texture2D air_image;
-inline Texture2D player_image;
-inline Texture2D exit_image;
-
-struct Sprite {
-    size_t frame_count    = 0;
-    size_t frames_to_skip = 3;
-    size_t frames_skipped = 0;
-    size_t frame_index    = 0;
-    bool loop = true;
-    size_t prev_game_frame = 0;
-    Texture2D *frames = nullptr;
-};
-
-inline Sprite coin_sprite;
-
 /* Shaders */
 
 inline Shader crt_shader;
@@ -126,22 +107,8 @@ void unload_shaders();
 void load_fonts();
 void unload_fonts();
 
-void load_images();
-void unload_images();
-
 void draw_image(Texture2D image, Vector2 pos, float width, float height);
 void draw_image(Texture2D image, Vector2 pos, float size);
-
-Sprite load_sprite(
-    const std::string &file_name_prefix,
-    const std::string &file_name_suffix,
-    size_t frame_count = 1,
-    bool loop = true,
-    size_t frames_to_skip = 3
-);
-void unload_sprite(Sprite &sprite);
-void draw_sprite(Sprite &sprite, Vector2 pos, float width, float height);
-void draw_sprite(Sprite &sprite, Vector2 pos, float size);
 
 void load_sounds();
 void unload_sounds();

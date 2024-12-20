@@ -89,22 +89,12 @@ void jump_player(GameState *game_state) {
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
 }
 
-struct GroundCastContext
-{
+struct GroundCastContext {
     bool is_hit;
-    b2ShapeId shape_id;
-    b2Vec2 point;
-    b2Vec2 normal;
-    float fraction;
 };
 
-float GroundCastCallback(b2ShapeId shape_id, b2Vec2 point, b2Vec2 normal, float fraction, void* context)
-{
+float ground_cast_callback(b2ShapeId shape_id, b2Vec2 point, b2Vec2 normal, float fraction, void* context) {
     auto* ground_cast_context = static_cast<GroundCastContext *>(context);
-    ground_cast_context->shape_id = shape_id;
-    ground_cast_context->point = point;
-    ground_cast_context->normal = normal;
-    ground_cast_context->fraction = fraction;
     ground_cast_context->is_hit = true;
     return fraction;
 }
@@ -131,7 +121,7 @@ bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
     filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
     filter.maskBits = PhysicsLayers::WALL_LAYER;
 
-    b2World_CastCapsule(world_id, &cast_capsule, origin_transform, direction, filter, GroundCastCallback, &context);
+    b2World_CastCapsule(world_id, &cast_capsule, origin_transform, direction, filter, ground_cast_callback, &context);
 
     return context.is_hit;
 }

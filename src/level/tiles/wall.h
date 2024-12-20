@@ -11,6 +11,6 @@
 
 char get_surroundings(Level *level, int x, int y);
 char get_surroundings_without_borders(Level *level, Vector2i position);
-void draw_wall(Vector2 pos, float size, char surroundings);
+void draw_wall(Vector2 pos, float size, char surroundings, Assets* assets);
 
 #endif //WALL_H

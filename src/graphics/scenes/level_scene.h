@@ -4,11 +4,11 @@
 
 #ifndef LEVEL_SCENE_H
 #define LEVEL_SCENE_H
-#include <memory>
 #include <level/level.h>
 
-void draw_player(std::unique_ptr<GameState> &game_state);
-void draw_level(std::unique_ptr<GameState> &game_state);
+void draw_player(Player* player, Assets* assets);
+void draw_level(Level* level, Assets* assets);
+void draw_level_debug_overlay(Level* level);
 void draw_game_overlay();
 
 #endif //LEVEL_SCENE_H

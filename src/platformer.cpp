@@ -44,7 +44,6 @@ void draw_game(std::unique_ptr<GameState> &game_state, RenderTexture2D &target) 
         UnloadRenderTexture(target);
         target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
         game_state->last_resolution = { GetScreenWidth(), GetScreenHeight() };
-        std::cout << "Reloaded texture!" << std::endl;
     }
 
     BeginTextureMode(target);
@@ -75,13 +74,14 @@ int main() {
     InitWindow(1280, 720, "Platformer");
     SetTargetFPS(60);
 
-    auto game_state = std::make_unique<GameState>(
-        Scene::MENU_SCENE,
-        nullptr
-    );
+    auto game_state = std::make_unique<GameState>(GameState {
+        .scene = Scene::MENU_SCENE,
+        .loaded_level = nullptr,
+        .assets = std::make_unique<Assets>(),
+    });
 
     load_fonts();
-    load_images();
+    load_images(game_state->assets.get());
     load_shaders();
     load_sounds();
     load_level(game_state, LevelPosition { 0, 0, 0 });
@@ -101,7 +101,7 @@ int main() {
     UnloadRenderTexture(target);
     unload_level(game_state);
     unload_sounds();
-    unload_images();
+    unload_images(game_state->assets.get());
     unload_shaders();
     unload_fonts();
 

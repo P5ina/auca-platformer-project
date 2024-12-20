@@ -10,6 +10,7 @@ struct GameInput {
     bool jump;
     bool toggle_debug_mode;
     bool toggle_full_screen;
+    bool skip_dialogue_line;
 };
 
 GameInput read_game_input();

@@ -29,9 +29,7 @@ void draw_game_overlay() {
     draw_text(score);
 }
 
-void draw_level(std::unique_ptr<GameState> &game_state) {
-    std::unique_ptr<Level> &level = game_state->loaded_level;
-
+void draw_level(Level *level, Assets *assets) {
     for (int row = 0; row < level->rows; ++row) {
         for (int column = 0; column < level->columns; ++column) {
             Vector2 pos = {
@@ -40,65 +38,56 @@ void draw_level(std::unique_ptr<GameState> &game_state) {
             };
 
             LevelTile tile = level->tiles[row * level->columns + column];
-            // The first image layer
+
             switch (tile.type) {
                 case LevelTileType::AIR:
-                    draw_air(pos, cell_size);
+                    draw_air(pos, cell_size, assets);
                 break;
                 case LevelTileType::WALL:
-                    char surroundings = get_surroundings(level.get(), column, row);
-                draw_wall(pos, cell_size, surroundings);
+                    char surroundings = get_surroundings(level, column, row);
+                draw_wall(pos, cell_size, surroundings, assets);
                 break;
             }
-            // The second image layer
-            // switch (tile.type) {
-            //     case LevelTileType::COIN:
-            //         draw_sprite(coin_sprite, pos, cell_size);
-            //     break;
-            //     default:
-            //         break;
-            // }
         }
     }
-
-    if (game_state->debug_mode) {
-        for (auto body : level->wall_bodies) {
-            b2ShapeId* shapes = new b2ShapeId[1000];
-            int size = b2Body_GetShapes(body, shapes, 1000);
-            for (int i = 0; i < size; i++) {
-                auto segment = b2Shape_GetSmoothSegment(shapes[i]);
-
-                Vector2 pos1 = {
-                    shift_to_center.x + segment.segment.point1.x * cell_size,
-                    shift_to_center.y + segment.segment.point1.y * cell_size
-                };
-                Vector2 pos2 = {
-                    shift_to_center.x + segment.segment.point2.x * cell_size,
-                    shift_to_center.y + segment.segment.point2.y * cell_size
-                };
-
-                Vector2 dir = Vector2Subtract(pos2, pos1);
-                Vector2 center = { (pos1.x + pos2.x) / 2.0f, (pos1.y + pos2.y) / 2.0f };
-                Vector2 n = { pos2.y - pos1.y, pos1.x - pos2.x };
-
-                DrawLineEx(pos1, pos2, 1, RED);
-                DrawLineEx(center, Vector2Add(center, Vector2Scale(n, 0.5f)), 1.0f, BLUE);
-
-                Vector2 tri1 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, -0.1f));
-                Vector2 tri3 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, 0.1f));
-                DrawTriangle(tri1, pos2, tri3, RED);
-            }
-        }
-    }
-
-    draw_player(game_state);
 }
 
-void draw_player(std::unique_ptr<GameState> &game_state) {
-    if (game_state->player == nullptr)
+void draw_level_debug_overlay(Level *level) {
+    for (auto body : level->wall_bodies) {
+        b2ShapeId* shapes = new b2ShapeId[1000];
+        int size = b2Body_GetShapes(body, shapes, 1000);
+        for (int i = 0; i < size; i++) {
+            auto segment = b2Shape_GetSmoothSegment(shapes[i]);
+
+            Vector2 pos1 = {
+                shift_to_center.x + segment.segment.point1.x * cell_size,
+                shift_to_center.y + segment.segment.point1.y * cell_size
+            };
+            Vector2 pos2 = {
+                shift_to_center.x + segment.segment.point2.x * cell_size,
+                shift_to_center.y + segment.segment.point2.y * cell_size
+            };
+
+            Vector2 dir = Vector2Subtract(pos2, pos1);
+            Vector2 center = { (pos1.x + pos2.x) / 2.0f, (pos1.y + pos2.y) / 2.0f };
+            Vector2 n = { pos2.y - pos1.y, pos1.x - pos2.x };
+
+            DrawLineEx(pos1, pos2, 1, RED);
+            DrawLineEx(center, Vector2Add(center, Vector2Scale(n, 0.5f)), 1.0f, BLUE);
+
+            Vector2 tri1 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, -0.1f));
+            Vector2 tri3 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, 0.1f));
+            DrawTriangle(tri1, pos2, tri3, RED);
+        }
+    }
+}
+
+
+void draw_player(Player *player, Assets *assets) {
+    if (player == nullptr)
         return;
 
-    b2Vec2 player_pos = b2Body_GetPosition(game_state->player->body_id);
+    b2Vec2 player_pos = b2Body_GetPosition(player->body_id);
 
     Vector2 pos = {
         shift_to_center.x + (player_pos.x - 0.5f) * cell_size,
@@ -112,22 +101,22 @@ void draw_player(std::unique_ptr<GameState> &game_state) {
     const int frames_count = 6;
     const double frame_time = 0.1;
 
-    if (game_state->player->jump_timer > frames_count * frame_time) {
-        if (game_state->player->is_facing_left) {
+    if (player->jump_timer > frames_count * frame_time) {
+        if (player->is_facing_left) {
             frame_y = 1;
         } else {
             frame_y = 0;
         }
     }
     else {
-        double time = game_state->player->jump_timer;
+        double time = player->jump_timer;
         frame_x = std::min(static_cast<int>(time / frame_time), frames_count - 1);
-        if (game_state->player->is_facing_left) {
+        if (player->is_facing_left) {
             frame_y = 3;
         } else {
             frame_y = 2;
         }
     }
     Rectangle source = { frame_x * 8.0f, frame_y * 8.0f, 8.0f, 8.0f };
-    DrawTexturePro(player_image, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+    DrawTexturePro(assets->images.player_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
 }

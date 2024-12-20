@@ -14,12 +14,14 @@
 void draw_current_scene(std::unique_ptr<GameState> &game_state) {
     switch (game_state->scene) {
         case Scene::MENU_SCENE: {
-            draw_level(game_state);
+            // draw_level(game_state->loaded_level.get(), game_state->assets.get());
+            draw_player(game_state->player.get(), game_state->assets.get());
             draw_menu(game_state.get());
             break;
         }
         case Scene::LEVEL_SCENE: {
-            draw_level(game_state);
+            draw_level(game_state->loaded_level.get(), game_state->assets.get());
+            draw_player(game_state->player.get(), game_state->assets.get());
             // draw_game_overlay();
             break;
         }
@@ -27,6 +29,13 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
             draw_placeholder_scene();
             break;
         }
+    }
+}
+
+void draw_level_scene(GameState *game_state) {
+    draw_level(game_state->loaded_level.get(), game_state->assets.get());
+    if (game_state->debug_mode) {
+        draw_level_debug_overlay(game_state->loaded_level.get());
     }
 }
 

@@ -11,7 +11,8 @@ GameInput read_game_input() {
         .horizontal_movement = 0.0f,
         .jump = false,
         .toggle_debug_mode = false,
-        .toggle_full_screen = false
+        .toggle_full_screen = false,
+        .skip_dialogue_line = false,
     };
 
     if (IsKeyDown(KeyboardKey::KEY_D) | IsKeyDown(KeyboardKey::KEY_RIGHT)) {
@@ -31,6 +32,10 @@ GameInput read_game_input() {
 
     if (IsKeyPressed(KeyboardKey::KEY_F5)) {
         game_input.toggle_full_screen = true;
+    }
+
+    if (IsMouseButtonPressed(0)) {
+        game_input.skip_dialogue_line = true;
     }
 
     return game_input;
