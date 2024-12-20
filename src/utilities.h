@@ -9,10 +9,10 @@ struct Vector2i {
     int y;
 };
 
-enum class PhysicsCategories {
-    PLAYER = 0x00000001,
-    WALL = 0x00000002,
-    GHOST = 0x00000004,
+enum PhysicsLayers {
+    PLAYER_LAYER = 0x00000001,
+    WALL_LAYER = 0x00000002,
+    GHOST_LAYER = 0x00000004,
 };
 
 float rand_from_to(float from, float to);

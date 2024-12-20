@@ -119,11 +119,13 @@ void load_sounds() {
 
     coin_sound = LoadSound(ASSETS_PATH"sounds/coin.wav");
     exit_sound = LoadSound(ASSETS_PATH"sounds/exit.wav");
+    jump_sound = LoadSound(ASSETS_PATH"sounds/jump.wav");
 }
 
 void unload_sounds() {
     UnloadSound(coin_sound);
     UnloadSound(exit_sound);
+    UnloadSound(jump_sound);
 }
 
 #endif // OLD_ASSETS_H

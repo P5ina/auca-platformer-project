@@ -24,7 +24,7 @@ vec2 uv_curve(vec2 uv)
 
     uv /= 1.05;
 
-    uv = (uv/2.0) + 0.5;
+    uv = (uv / 2.0) + 0.5;
     return uv;
 }
 
@@ -35,11 +35,11 @@ void main() {
     vec2 curved_uv = uv_curve(fragTexCoord);
 
     float r = texture(texture0, curved_uv + vec2(0.0), 0.0).r;
-    float g = texture(texture0, curved_uv + vec2(0.001), 0.0).g;
-    float b = texture(texture0, curved_uv + vec2(-0.001), 0.0).b;
+    float g = texture(texture0, curved_uv + vec2(0.0015), 0.0).g;
+    float b = texture(texture0, curved_uv + vec2(-0.0015), 0.0).b;
     float a = texture(texture0, curved_uv, 0.0).a;
 
-    float s = sin(curved_uv.y * 200 * PI * 2.0);
+    float s = sin(curved_uv.y * 150 * PI * 2.0);
     s = (s * 0.5 + 0.5) * 0.9 + 0.1;
     vec4 scan_line = vec4(vec3(pow(s, 0.25)), 1.0);
 

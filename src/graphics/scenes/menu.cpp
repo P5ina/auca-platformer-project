@@ -5,9 +5,11 @@
 #include "menu.h"
 
 #include <globals.h>
+#include <input.h>
 #include <random>
 #include <graphics/animation.h>
 #include <string>
+#include <gameobjects/player.h>
 
 #include "raylib.h"
 #include "raymath.h"
@@ -123,6 +125,7 @@ void draw_start_message(GameState *game_state) {
 
 void init_main_menu(GameState *game_state) {
     game_state->main_menu_state = {};
+    game_state->player->movement_locked = true;
 
     // Generate random order for characters for appear
     unsigned int length = TextLength(title_text.c_str());
@@ -135,4 +138,13 @@ void init_main_menu(GameState *game_state) {
     std::shuffle(std::begin(game_state->main_menu_state.title_char_appearing_order),
                  std::end(game_state->main_menu_state.title_char_appearing_order), rng
     );
+}
+
+void update_menu(GameState* game_state, GameInput* game_input) {
+    if (game_state->main_menu_state.elapsed_time > 5.0f && game_input->jump) {
+        game_state->player->movement_locked = false;
+        game_state->scene = Scene::LEVEL_SCENE;
+
+        jump_player(game_state);
+    }
 }

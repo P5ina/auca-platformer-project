@@ -141,7 +141,8 @@ void create_level_collisions(Level *level) {
             b2BodyId wall_body_id = b2CreateBody(level->world_id, &wall_body_def);
 
             b2ChainDef chain_def = create_wall_chain(level, { x, y });
-            chain_def.filter.categoryBits = static_cast<uint32_t>(PhysicsCategories::WALL);
+            chain_def.filter.categoryBits = PhysicsLayers::WALL_LAYER;
+            chain_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER;
 
             b2CreateChain(wall_body_id, &chain_def);
             level->wall_bodies.push_back(wall_body_id);

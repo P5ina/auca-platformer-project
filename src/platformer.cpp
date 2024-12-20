@@ -32,6 +32,10 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
     }
 
     update_player(game_state.get(), inputs.get(), delta);
+
+    if (game_state->scene == Scene::MENU_SCENE) {
+        update_menu(game_state.get(), inputs.get());
+    }
 }
 
 void draw_game(std::unique_ptr<GameState> &game_state, RenderTexture2D &target) {

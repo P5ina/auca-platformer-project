@@ -19,6 +19,9 @@ void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position) {
 
     b2ShapeDef shape_def = b2DefaultShapeDef();
     shape_def.density = 10.0f; // kg/m^2
+    shape_def.friction = 0.0f;
+    shape_def.filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
+    shape_def.filter.maskBits = PhysicsLayers::WALL_LAYER | PhysicsLayers::GHOST_LAYER;
     const float height = 0.9f;
     const float radius = 0.3f;
     b2Capsule collider = {
@@ -44,13 +47,15 @@ void despawn_player(std::unique_ptr<GameState> &game_state) {
 }
 
 void update_player(GameState *game_state, GameInput *game_input, float delta) {
+    const float movement_speed = 5.0f;
+
     if (game_state->player == nullptr)
         return;
 
-    const float movement_speed = 5.0f;
-    const float jump_cooldown = 0.2f;
+    if (game_state->player->movement_locked)
+        return;
 
-    if (game_input->jump && game_state->player->jump_timer >= jump_cooldown) {
+    if (game_input->jump) {
         jump_player(game_state);
     }
 
@@ -71,23 +76,62 @@ void update_player(GameState *game_state, GameInput *game_input, float delta) {
 
 void jump_player(GameState *game_state) {
     constexpr float JUMP_FORCE = -8.0f;
+    constexpr float JUMP_COOLDOWN = 0.3f;
 
     b2Vec2 velocity = b2Body_GetLinearVelocity(game_state->player->body_id);
     bool g = is_grounded(game_state->loaded_level->world_id, game_state->player);
-    if (g) {
+    if (g && game_state->player->jump_timer >= JUMP_COOLDOWN) {
         game_state->player->jump_timer = 0;
         velocity.y = JUMP_FORCE;
+        PlaySound(jump_sound);
     }
 
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
 }
 
-bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
-    b2Vec2 origin = b2Body_GetPosition(player->body_id);
-    b2Vec2 direction = b2Vec2{0.0f, 0.6f};
-    b2QueryFilter filter = b2DefaultQueryFilter();
-    filter.maskBits = static_cast<uint32_t>(PhysicsCategories::WALL);
-    b2RayResult result = b2World_CastRayClosest(world_id, origin, direction, filter);
+struct GroundCastContext
+{
+    bool is_hit;
+    b2ShapeId shape_id;
+    b2Vec2 point;
+    b2Vec2 normal;
+    float fraction;
+};
 
-    return result.hit;
+float GroundCastCallback(b2ShapeId shape_id, b2Vec2 point, b2Vec2 normal, float fraction, void* context)
+{
+    auto* ground_cast_context = static_cast<GroundCastContext *>(context);
+    ground_cast_context->shape_id = shape_id;
+    ground_cast_context->point = point;
+    ground_cast_context->normal = normal;
+    ground_cast_context->fraction = fraction;
+    ground_cast_context->is_hit = true;
+    return fraction;
+}
+
+bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
+    GroundCastContext context{};
+    auto *shapes = new b2ShapeId[1];
+    b2Body_GetShapes(player->body_id, shapes, 1);
+    b2Capsule player_capsule = b2Shape_GetCapsule(shapes[0]);
+
+    b2Capsule cast_capsule = b2Capsule {
+        .center1 = player_capsule.center1,
+        .center2 = player_capsule.center2,
+        .radius = player_capsule.radius - 0.05f
+    };
+
+    b2Transform origin_transform;
+    origin_transform.p = b2Body_GetPosition(player->body_id);
+    origin_transform.q = b2Rot_identity;
+
+    b2Vec2 direction = b2Vec2{0.0f, 0.2f};
+
+    b2QueryFilter filter;
+    filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
+    filter.maskBits = PhysicsLayers::WALL_LAYER;
+
+    b2World_CastCapsule(world_id, &cast_capsule, origin_transform, direction, filter, GroundCastCallback, &context);
+
+    return context.is_hit;
 }

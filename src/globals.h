@@ -85,6 +85,7 @@ inline Shader crt_shader;
 
 inline Sound coin_sound;
 inline Sound exit_sound;
+inline Sound jump_sound;
 
 /* Victory Menu Background */
 
