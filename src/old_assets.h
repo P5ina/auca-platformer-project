@@ -8,7 +8,7 @@
 #include <cassert>
 
 void load_fonts() {
-    menu_font = LoadFontEx(ASSETS_PATH"fonts/ARCADE_N.ttf", 256, nullptr, 128);
+    menu_font = LoadFontEx(ASSETS_PATH"fonts/easvhs.ttf", 64, nullptr, 128);
 }
 
 void unload_fonts() {

@@ -14,8 +14,6 @@
 
 const std::string AIR_COLOR = "#000000";
 const std::string WALL_COLOR = "#ffffff";
-const std::string PLAYER_SPAWN_COLOR = "#6abe30";
-const std::string COIN_COLOR = "#fbf236";
 
 struct LevelPosition {
     int x, y, z;

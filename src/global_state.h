@@ -5,7 +5,6 @@
 #ifndef GLOBAL_STATE_H
 #define GLOBAL_STATE_H
 #include <memory>
-#include <optional>
 #include <utilities.h>
 #include <vector>
 #include <graphics/scene.h>
@@ -15,13 +14,12 @@
 struct Player {
     b2BodyId body_id;
     float jump_timer;
+    bool movement_locked;
 };
 
 enum class LevelTileType {
     AIR,
-    WALL,
-    PLAYER_SPAWN,
-    COIN
+    WALL
 };
 
 struct LevelTile {
@@ -37,11 +35,18 @@ struct Level {
     std::vector<b2BodyId> wall_bodies;
 };
 
+struct MainMenuState {
+    float elapsed_time = 0.0f;
+    bool fade_in = true;
+    std::vector<int> title_char_appearing_order;
+};
+
 struct GameState {
     Scene scene = Scene::MENU_SCENE;
     std::unique_ptr<Level> loaded_level;
     std::unique_ptr<Player> player;
-    bool debug_mode;
+    bool debug_mode = false;
+    MainMenuState main_menu_state;
     // TODO: Assets
     // Assets assets;
 };

@@ -4,10 +4,12 @@
 
 #ifndef MENU_H
 #define MENU_H
+#include <global_state.h>
 
-#include "globals.h"
+void init_main_menu(GameState *game_state);
 
-void draw_menu();
-void draw_game_title();
+void draw_menu(GameState *game_state);
+void draw_game_title(GameState *game_state);
+void draw_start_message(GameState *game_state);
 
 #endif //MENU_H

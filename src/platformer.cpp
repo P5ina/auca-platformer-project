@@ -1,8 +1,9 @@
 #include <global_state.h>
 #include <input.h>
-#include <characters/player.h>
+#include <gameobjects/player.h>
 #include <graphics/scene.h>
 #include <old_assets.h>
+#include <graphics/scenes/menu.h>
 
 #include "raylib.h"
 
@@ -30,16 +31,17 @@ int main() {
     InitWindow(1280, 720, "Platformer");
     SetTargetFPS(60);
 
-    load_fonts();
-    load_images();
-    load_sounds();
-
     auto game_state = std::make_unique<GameState>(
-        Scene::LEVEL_SCENE,
+        Scene::MENU_SCENE,
         nullptr
     );
 
+    load_fonts();
+    load_images();
+    load_sounds();
     load_level(game_state, LevelPosition { 0, 0, 0 });
+    spawn_player(game_state, { 7.5, 8 });
+    init_main_menu(game_state.get());
 
     while (!WindowShouldClose()) {
         BeginDrawing();

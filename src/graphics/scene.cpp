@@ -14,8 +14,8 @@
 void draw_current_scene(std::unique_ptr<GameState> &game_state) {
     switch (game_state->scene) {
         case Scene::MENU_SCENE: {
-            draw_menu();
             draw_level(game_state);
+            draw_menu(game_state.get());
             break;
         }
         case Scene::LEVEL_SCENE: {

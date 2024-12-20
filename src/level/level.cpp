@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 #include <utilities.h>
-#include <characters/player.h>
+#include <gameobjects/player.h>
 
 #include "box2d/box2d.h"
 
@@ -26,7 +26,6 @@ void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position) 
 
     UnloadImage(level_image);
 
-    spawn_player(game_state);
     derive_graphics_metrics_from_level(game_state->loaded_level);
 }
 
@@ -144,8 +143,7 @@ void create_level_collisions(Level *level) {
             b2ChainDef chain_def = create_wall_chain(level, { x, y });
             chain_def.filter.categoryBits = static_cast<uint32_t>(PhysicsCategories::WALL);
 
-            auto chain_id = b2CreateChain(wall_body_id, &chain_def);
-            std::cout << b2Chain_IsValid(chain_id) << "\n";
+            b2CreateChain(wall_body_id, &chain_def);
             level->wall_bodies.push_back(wall_body_id);
         }
     }
@@ -192,12 +190,6 @@ LevelTile create_level_tile(Color color, Vector2i position) {
     }
     if (ColorIsEqual(color, get_color_from_hex(WALL_COLOR))) {
         type = LevelTileType::WALL;
-    }
-    if (ColorIsEqual(color, get_color_from_hex(PLAYER_SPAWN_COLOR))) {
-        type = LevelTileType::PLAYER_SPAWN;
-    }
-    if (ColorIsEqual(color, get_color_from_hex(COIN_COLOR))) {
-        type = LevelTileType::COIN;
     }
 
     return LevelTile{

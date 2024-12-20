@@ -6,5 +6,6 @@
 #define ANIMATION_H
 
 float get_animation_value(float time, float duration, float delay);
+float ease_out_sine(float x);
 
 #endif //ANIMATION_H
