@@ -30,14 +30,14 @@ void load_images() {
     air_image     = LoadTexture(ASSETS_PATH"images/air.png");
     exit_image    = LoadTexture(ASSETS_PATH"images/exit.png");
     coin_sprite   = load_sprite(ASSETS_PATH"images/coin/coin",     ".png", 3, true, 18);
-    player_sprite = load_sprite(ASSETS_PATH"images/player/player", ".png", 3, true, 10);
+    player_image  = LoadTexture(ASSETS_PATH"images/player/player.png");
 }
 
 void unload_images() {
     UnloadTexture(wall_image);
     UnloadTexture(air_image);
     UnloadTexture(exit_image);
-    unload_sprite(player_sprite);
+    UnloadTexture(player_image);
     unload_sprite(coin_sprite);
 }
 

@@ -28,8 +28,10 @@ void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position) {
     };
     b2CreateCapsuleShape(player_body_id, &shape_def, &collider);
 
-    game_state->player = std::make_unique<Player>(Player{
-        .body_id = player_body_id
+    game_state->player = std::make_unique<Player>(Player {
+        .body_id = player_body_id,
+        // Quick fix for jump animation
+        .jump_timer = 100.0f,
     });
 }
 
@@ -55,29 +57,26 @@ void update_player(GameState *game_state, GameInput *game_input, float delta) {
     b2Vec2 velocity = b2Body_GetLinearVelocity(game_state->player->body_id);
     velocity.x = game_input->horizontal_movement * movement_speed;
 
+    if (velocity.x > 0) {
+        game_state->player->is_facing_left = false;
+    }
+    else if (velocity.x < 0) {
+        game_state->player->is_facing_left = true;
+    }
+
     game_state->player->jump_timer += delta;
 
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
-
-    // if (is_colliding(game_state->loaded_level, player_pos, COIN)) {
-    //     int index = get_collider_tile_index(game_state->loaded_level, player_pos, COIN);
-    //     set_tile_at_index(game_state->loaded_level, index, AIR);
-    //     player_score += 10;
-    //     PlaySound(coin_sound);
-    // }
-    // if (is_colliding(game_state->loaded_level, player_pos, EXIT)) {
-    //     // TODO
-    // }
 }
 
 void jump_player(GameState *game_state) {
-    const float jump_force = -8.0f;
+    constexpr float JUMP_FORCE = -8.0f;
 
     b2Vec2 velocity = b2Body_GetLinearVelocity(game_state->player->body_id);
     bool g = is_grounded(game_state->loaded_level->world_id, game_state->player);
     if (g) {
         game_state->player->jump_timer = 0;
-        velocity.y = jump_force;
+        velocity.y = JUMP_FORCE;
     }
 
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);

@@ -19,8 +19,8 @@ vec2 uv_curve(vec2 uv)
 {
     uv = (uv - 0.5) * 2.0;
 
-    uv.x *= 1.0 + pow(abs(uv.y) / 5.0, 2.0);
-    uv.y *= 1.0 + pow(abs(uv.x) / 5.0, 2.0);
+    uv.x *= 1.0 + pow(abs(uv.y) / 4.5, 2.0);
+    uv.y *= 1.0 + pow(abs(uv.x) / 4.5, 2.0);
 
     uv /= 1.05;
 

@@ -105,16 +105,29 @@ void draw_player(std::unique_ptr<GameState> &game_state) {
         shift_to_center.y + (player_pos.y - 0.5f) * cell_size
     };
 
-    draw_sprite(player_sprite, pos, cell_size);
-}
+    Rectangle destination = { pos.x, pos.y, cell_size, cell_size };
+    int frame_x = 0;
+    int frame_y = 0;
 
-void draw_player_jump(std::unique_ptr<Player> &player, Vector2 pos, float size) {
-    const int frames_count = 3;
-    const double frame_time = 0.2;
+    const int frames_count = 6;
+    const double frame_time = 0.1;
 
-    double time = player->jump_timer;
-    const int frame = (static_cast<int>((time + pos.y * 8) / frame_time)) % frames_count;
-    Rectangle source = { frame * 8.0f, 0, 8.0f, 8.0f };
-    Rectangle destination = { pos.x, pos.y, size, size };
-    DrawTexturePro(air_image, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+    if (game_state->player->jump_timer > frames_count * frame_time) {
+        if (game_state->player->is_facing_left) {
+            frame_y = 1;
+        } else {
+            frame_y = 0;
+        }
+    }
+    else {
+        double time = game_state->player->jump_timer;
+        frame_x = std::min(static_cast<int>(time / frame_time), frames_count - 1);
+        if (game_state->player->is_facing_left) {
+            frame_y = 3;
+        } else {
+            frame_y = 2;
+        }
+    }
+    Rectangle source = { frame_x * 8.0f, frame_y * 8.0f, 8.0f, 8.0f };
+    DrawTexturePro(player_image, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
 }

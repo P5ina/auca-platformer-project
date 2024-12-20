@@ -5,7 +5,6 @@
 
 #include <string>
 #include <cstddef>
-#include <cmath>
 #include <level/level.h>
 
 /* Player data */
@@ -63,6 +62,7 @@ inline Text victory_subtitle = {
 
 inline Texture2D wall_image;
 inline Texture2D air_image;
+inline Texture2D player_image;
 inline Texture2D exit_image;
 
 struct Sprite {
@@ -76,7 +76,6 @@ struct Sprite {
 };
 
 inline Sprite coin_sprite;
-inline Sprite player_sprite;
 
 /* Shaders */
 
