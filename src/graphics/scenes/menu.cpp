@@ -4,6 +4,7 @@
 
 #include "menu.h"
 
+#include <algorithm>
 #include <globals.h>
 #include <input.h>
 #include <random>

@@ -26,12 +26,12 @@ void draw_dialogue(Dialogue *dialogue, Assets* assets) {
 
     const float HEIGHT_PERCENT = 0.3f;
     auto nine_patch_info = NPatchInfo {
-        .layout = NPatchLayout::NPATCH_NINE_PATCH,
         .source = Rectangle { 0.0f, 0.0f, static_cast<float>(texture.width), static_cast<float>(texture.height) },
-        .top = 8 * 8,
-        .bottom = 8 * 8,
         .left = 8 * 8,
+        .top = 8 * 8,
         .right = 8 * 8,
+        .bottom = 8 * 8,
+        .layout = NPatchLayout::NPATCH_NINE_PATCH,
     };
     auto dest = Rectangle {
         x_offset, y_offset,

@@ -19,11 +19,10 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
     }
 
     if (inputs->toggle_full_screen) {
+        int width = GetMonitorWidth(0);
+        int height = GetMonitorHeight(0);
         ToggleFullscreen();
         if (IsWindowFullscreen()) {
-            int width = GetMonitorWidth(0);
-            int height = GetMonitorHeight(0);
-
             SetWindowSize(width, height);
         } else {
             SetWindowSize(1280, 720);

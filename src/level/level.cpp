@@ -7,7 +7,7 @@
 #include <format>
 #include <global_state.h>
 #include <graphics_old.h>
-#include <iostream>
+#include <queue>
 #include <string>
 #include <utilities.h>
 #include <gameobjects/player.h>

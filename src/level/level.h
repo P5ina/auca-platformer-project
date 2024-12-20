@@ -6,11 +6,10 @@
 #define LEVEL_H
 
 #include <global_state.h>
+#include <optional>
 #include <utilities.h>
-#include <vector>
 
 #include "raylib.h"
-#include "box2d/id.h"
 
 const std::string AIR_COLOR = "#000000";
 const std::string WALL_COLOR = "#ffffff";
