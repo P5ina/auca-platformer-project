@@ -26,6 +26,7 @@ struct Player {
     b2BodyId body_id;
     float jump_timer;
     bool movement_locked;
+    bool is_facing_left;
 };
 
 enum class LevelTileType {

@@ -30,8 +30,8 @@ void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position) 
 }
 
 void unload_level(std::unique_ptr<GameState> &game_state) {
-    b2DestroyWorld(game_state->loaded_level->world_id);
     despawn_player(game_state);
+    b2DestroyWorld(game_state->loaded_level->world_id);
 
     game_state->loaded_level = nullptr;
 }

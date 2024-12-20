@@ -107,3 +107,14 @@ void draw_player(std::unique_ptr<GameState> &game_state) {
 
     draw_sprite(player_sprite, pos, cell_size);
 }
+
+void draw_player_jump(std::unique_ptr<Player> &player, Vector2 pos, float size) {
+    const int frames_count = 3;
+    const double frame_time = 0.2;
+
+    double time = player->jump_timer;
+    const int frame = (static_cast<int>((time + pos.y * 8) / frame_time)) % frames_count;
+    Rectangle source = { frame * 8.0f, 0, 8.0f, 8.0f };
+    Rectangle destination = { pos.x, pos.y, size, size };
+    DrawTexturePro(air_image, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+}
