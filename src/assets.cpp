@@ -30,16 +30,27 @@ std::unique_ptr<AssetSounds> load_sounds() {
     auto asset_sounds = std::make_unique<AssetSounds>();
 
     asset_sounds->jump_sound = std::make_unique<Sound>(LoadSound(ASSETS_PATH"sounds/jump.wav"));
+    asset_sounds->dialogue_sound = std::make_unique<Sound>(LoadSound(ASSETS_PATH"sounds/dialogue_sound.mp3"));
 
     asset_sounds->main_menu_music = std::make_unique<Music>(
         LoadMusicStream(ASSETS_PATH"sounds/music/main_menu_music.mp3")
     );
 
+    asset_sounds->dialogue_sound_pool = std::vector<Sound>(10);
+    for (int i = 0; i < 10; i++) {
+        asset_sounds->dialogue_sound_pool[i] = LoadSoundAlias(*asset_sounds->dialogue_sound);
+    }
+
     return asset_sounds;
 }
 
 void unload_sounds(std::unique_ptr<AssetSounds> asset_sounds) {
+    for (const auto & i : asset_sounds->dialogue_sound_pool) {
+        UnloadSoundAlias(i);
+    }
+
     UnloadSound(*asset_sounds->jump_sound);
+    UnloadSound(*asset_sounds->dialogue_sound);
     UnloadMusicStream(*asset_sounds->main_menu_music);
 }
 

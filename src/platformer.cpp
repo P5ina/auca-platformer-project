@@ -41,6 +41,7 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
     }
 
     update_player(game_state.get(), inputs.get(), delta);
+    update_dialogue(game_state->loaded_dialogue.get(), inputs.get(), game_state->assets.get());
 
     if (game_state->scene == Scene::MENU_SCENE) {
         update_menu(game_state.get(), inputs.get());

@@ -15,7 +15,7 @@ void unload_shaders() {
 }
 
 void load_fonts() {
-    menu_font = LoadFontEx(ASSETS_PATH"fonts/easvhs.ttf", 64, nullptr, 128);
+    menu_font = LoadFontEx(ASSETS_PATH"fonts/easvhs.ttf", 64, nullptr, 250);
 }
 
 void unload_fonts() {

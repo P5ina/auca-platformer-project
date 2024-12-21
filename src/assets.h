@@ -5,6 +5,7 @@
 #ifndef ASSETS_H
 #define ASSETS_H
 #include <memory>
+#include <vector>
 
 #include "raylib.h"
 
@@ -18,6 +19,8 @@ struct AssetImages {
 struct AssetSounds {
     std::unique_ptr<Music> main_menu_music;
     std::unique_ptr<Sound> jump_sound;
+    std::unique_ptr<Sound> dialogue_sound;
+    std::vector<Sound> dialogue_sound_pool;
 };
 
 struct Assets {

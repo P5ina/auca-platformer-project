@@ -160,7 +160,7 @@ void update_menu(GameState *game_state, GameInput *game_input) {
 
         game_state->loaded_dialogue = std::make_unique<Dialogue>(Dialogue {
             .lines = {
-                "Welcome to Deep Woods. My name is DAMAGED_FILE.",
+                "Welcome to Deep Woods. My name is DAMAGED FILE. This will be your first lesson. Use A, D and Space keys to move... Find books that I left for you, and you will know more about this world.",
                 "This will be your first lesson. Use A, D and Space keys to move.",
                 "Find books that I left for you, and you will know more about this world."
             }
