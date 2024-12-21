@@ -92,7 +92,7 @@ int main() {
     load_fonts();
     game_state->assets->images = load_images();
     load_shaders();
-    load_sounds();
+    game_state->assets->sounds = load_sounds();
     load_level(game_state, LevelPosition { 0, 0, 0 });
     spawn_player(game_state, { 7.5, 8 });
     init_main_menu(game_state.get());
@@ -109,7 +109,7 @@ int main() {
 
     UnloadRenderTexture(target);
     unload_level(game_state);
-    unload_sounds();
+    unload_sounds(std::move(game_state->assets->sounds));
     unload_images(std::move(game_state->assets->images)) ;
     unload_shaders();
     unload_fonts();

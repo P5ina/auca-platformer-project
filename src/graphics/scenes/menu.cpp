@@ -25,7 +25,7 @@ void draw_menu(GameState *game_state) {
 }
 
 void draw_game_title(GameState *game_state) {
-    const float FONT_SIZE = 48.0f * get_ui_scale();
+    const float FONT_SIZE = 64.0f * get_ui_scale();
     const float TEXT_SPACING_START = 15.0f;
     const float TEXT_SPACING_END = 4.0f;
     const Vector2 TEXT_OFFSET = Vector2Scale({0, 60.0f}, get_ui_scale());
@@ -97,7 +97,8 @@ void draw_game_title(GameState *game_state) {
 void draw_start_message(GameState *game_state) {
     const float ANIMATION_DURATION = 1.5f;
     const float ANIMATION_DELAY = 5.0f;
-    const float FONT_SIZE = 12.0f * get_ui_scale();
+    const float FONT_SIZE = 18.0f * get_ui_scale();
+    const Vector2 TEXT_OFFSET = Vector2Scale({0, 30.0f}, get_ui_scale());
 
     const std::string text = "Press SPACE to Jump";
 
@@ -107,8 +108,8 @@ void draw_start_message(GameState *game_state) {
                                                    ANIMATION_DELAY
     );
     auto position = Vector2{
-        (static_cast<float>(get_display_width()) - size.x) / 2.0f,
-        (static_cast<float>(get_display_height()) - size.y) / 2.0f
+        (static_cast<float>(get_display_width()) - size.x) / 2.0f + TEXT_OFFSET.x,
+        (static_cast<float>(get_display_height()) - size.y) / 2.0f + TEXT_OFFSET.y
     };
     Color color = Fade(WHITE, animation_progress);
     DrawTextEx(menu_font, text.c_str(), position, FONT_SIZE, 1.0f, color);
@@ -143,10 +144,15 @@ void init_main_menu(GameState *game_state) {
 
     auto rng = std::default_random_engine{};
     std::ranges::shuffle(game_state->main_menu_state.title_char_appearing_order, rng);
+
+    PlayMusicStream(*game_state->assets->sounds->main_menu_music);
 }
 
 void update_menu(GameState *game_state, GameInput *game_input) {
+    UpdateMusicStream(*game_state->assets->sounds->main_menu_music);
+
     if (game_state->main_menu_state.elapsed_time > 5.0f && game_input->jump) {
+        StopMusicStream(*game_state->assets->sounds->main_menu_music);
         game_state->player->movement_locked = false;
         game_state->scene = Scene::LEVEL_SCENE;
 

@@ -29,12 +29,6 @@ struct Text {
 inline Shader crt_shader;
 inline Shader air_shader;
 
-/* Sounds */
-
-inline Sound coin_sound;
-inline Sound exit_sound;
-inline Sound jump_sound;
-
 /* Victory Menu Background */
 
 struct VictoryBall {
@@ -75,8 +69,5 @@ void unload_fonts();
 
 void draw_image(Texture2D image, Vector2 pos, float width, float height);
 void draw_image(Texture2D image, Vector2 pos, float size);
-
-void load_sounds();
-void unload_sounds();
 
 #endif // GLOBALS_H

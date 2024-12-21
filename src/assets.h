@@ -15,11 +15,20 @@ struct AssetImages {
     std::unique_ptr<Texture2D> player_texture;
 };
 
+struct AssetSounds {
+    std::unique_ptr<Music> main_menu_music;
+    std::unique_ptr<Sound> jump_sound;
+};
+
 struct Assets {
     std::unique_ptr<AssetImages> images;
+    std::unique_ptr<AssetSounds> sounds;
 };
 
 std::unique_ptr<AssetImages> load_images();
 void unload_images(std::unique_ptr<AssetImages> asset_images);
+
+std::unique_ptr<AssetSounds> load_sounds();
+void unload_sounds(std::unique_ptr<AssetSounds> asset_sounds);
 
 #endif //ASSETS_H

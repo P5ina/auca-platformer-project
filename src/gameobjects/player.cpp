@@ -83,7 +83,7 @@ void jump_player(GameState *game_state) {
     if (g && game_state->player->jump_timer >= JUMP_COOLDOWN) {
         game_state->player->jump_timer = 0;
         velocity.y = JUMP_FORCE;
-        PlaySound(jump_sound);
+        PlaySound(*game_state->assets->sounds->jump_sound);
     }
 
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
