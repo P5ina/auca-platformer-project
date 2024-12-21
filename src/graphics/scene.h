@@ -11,7 +11,6 @@ struct GameState;
 enum class Scene {
     MENU_SCENE,
     LEVEL_SCENE,
-    DIALOGUE_SCENE,
     END_SCENE,
 };
 

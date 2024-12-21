@@ -157,5 +157,13 @@ void update_menu(GameState *game_state, GameInput *game_input) {
         game_state->scene = Scene::LEVEL_SCENE;
 
         jump_player(game_state);
+
+        game_state->loaded_dialogue = std::make_unique<Dialogue>(Dialogue {
+            .lines = {
+                "Welcome to Deep Woods. My name is DAMAGED_FILE.",
+                "This will be your first lesson. Use A, D and Space keys to move.",
+                "Find books that I left for you, and you will know more about this world."
+            }
+        });
     }
 }
