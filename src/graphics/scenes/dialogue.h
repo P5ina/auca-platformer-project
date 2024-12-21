@@ -16,6 +16,7 @@ struct Dialogue {
 };
 
 void update_dialogue(Dialogue *dialogue, GameInput* game_input, Assets* assets);
+bool is_dialogue_ended(const Dialogue *dialogue);
 void draw_dialogue(Dialogue *dialogue, Assets* assets);
 
 #endif //DIALOGUE_H

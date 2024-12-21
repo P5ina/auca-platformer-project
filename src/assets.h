@@ -11,6 +11,7 @@
 
 struct AssetImages {
     std::unique_ptr<Texture2D> dialogue_panel_texture;
+    std::unique_ptr<Texture2D> dialogue_indicator_texture;
     std::unique_ptr<Texture2D> wall_texture;
     std::unique_ptr<Texture2D> air_texture;
     std::unique_ptr<Texture2D> player_texture;

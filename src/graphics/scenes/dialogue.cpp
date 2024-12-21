@@ -40,6 +40,10 @@ void update_dialogue(Dialogue *dialogue, GameInput *game_input, Assets *assets) 
             }
         }
 
+        if (game_input->skip_dialogue_line) {
+            dialogue->current_line_progress = dialogue->lines[dialogue->current_line].length();
+        }
+
         if (play_sound) {
             int sound_index = (dialogue->current_line_progress / SOUND_PER_CHAR) %
                 static_cast<int>(assets->sounds->dialogue_sound_pool.size());
@@ -48,8 +52,21 @@ void update_dialogue(Dialogue *dialogue, GameInput *game_input, Assets *assets) 
             SetSoundPitch(assets->sounds->dialogue_sound_pool[sound_index], pitch);
             PlaySound(assets->sounds->dialogue_sound_pool[sound_index]);
         }
+    } else {
+        if (game_input->skip_dialogue_line) {
+            dialogue->current_line++;
+            dialogue->current_line_progress = 0;
+        }
     }
 }
+
+bool is_dialogue_ended(const Dialogue *dialogue) {
+    if (dialogue == nullptr) {
+        return true;
+    }
+    return dialogue->lines.size() <= dialogue->current_line;
+}
+
 
 void draw_dialogue(Dialogue *dialogue, Assets *assets) {
     if (dialogue == nullptr)
@@ -124,5 +141,21 @@ void draw_dialogue(Dialogue *dialogue, Assets *assets) {
         );
 
         text_position = Vector2Add(text_position, {0, font_size + 5.0f * ui_scale});
+    }
+
+    if (dialogue->current_line_progress == dialogue->lines[dialogue->current_line].length()) {
+        Texture2D indicator = *assets->images->dialogue_indicator_texture;
+        float indicator_size = 24.0f * ui_scale;
+        float indicator_offset = 15.0f * ui_scale;
+
+        Rectangle indicator_source = {
+            0, 0,
+            static_cast<float>(indicator.width), static_cast<float>(indicator.height)
+        };
+        Rectangle indicator_dest = {
+            x_offset + dest_width - corner_size - indicator_offset, y_offset + dest_height - corner_size - indicator_offset,
+            indicator_size, indicator_size
+        };
+        DrawTexturePro(indicator, indicator_source, indicator_dest, Vector2Zero(), 0.0f, color);
     }
 }
