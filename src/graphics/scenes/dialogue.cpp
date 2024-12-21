@@ -17,8 +17,8 @@ void update_dialogue(Dialogue *dialogue, GameInput *game_input) {
 }
 
 void draw_dialogue(Dialogue *dialogue, Assets* assets) {
-    // if (dialogue == nullptr)
-    //     return;
+    if (dialogue == nullptr)
+        return;
 
     Texture2D texture = *assets->images->dialogue_panel_texture;
     float x_offset = 120.0f;

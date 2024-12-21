@@ -6,9 +6,8 @@
 #define LEVEL_SCENE_H
 #include <level/level.h>
 
-void draw_player(Player* player, Assets* assets);
+void draw_player(Level* level, Player* player, Assets* assets);
 void draw_level(Level* level, Assets* assets);
 void draw_level_debug_overlay(Level* level);
-void draw_game_overlay();
 
 #endif //LEVEL_SCENE_H

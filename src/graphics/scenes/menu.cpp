@@ -11,20 +11,12 @@
 #include <graphics/animation.h>
 #include <string>
 #include <gameobjects/player.h>
+#include <graphics/metrics.h>
 
 #include "raylib.h"
 #include "raymath.h"
 
 const std::string title_text = "Deep Woods";
-
-struct FireParticle {
-    Vector2 position;
-    float rotation;
-    float rotationSpeed;
-    float wobbleAmplitude;
-    float wobbleFrequency;
-    Color color;
-};
 
 void draw_menu(GameState *game_state) {
     game_state->main_menu_state.elapsed_time += GetFrameTime();
@@ -33,19 +25,18 @@ void draw_menu(GameState *game_state) {
 }
 
 void draw_game_title(GameState *game_state) {
-    const float FONT_SIZE_MULTIPLIER = 1.5f;
-    const float FONT_SIZE = menu_font.baseSize * FONT_SIZE_MULTIPLIER;
+    const float FONT_SIZE = 48.0f * get_ui_scale();
     const float TEXT_SPACING_START = 15.0f;
     const float TEXT_SPACING_END = 4.0f;
-    const Vector2 TEXT_OFFEST = {0, 120.0f};
+    const Vector2 TEXT_OFFSET = Vector2Scale({0, 60.0f}, get_ui_scale());
     const Color TEXT_COLOR_START = ColorAlpha(get_color_from_hex("2700B3"), 0.0f);
     const Color TEXT_COLOR_END = get_color_from_hex("8000FF");
 
     const float ANIMATION_DURATION = 4.5f;
     const float ANIMATION_DELAY = 1.0f;
-    const float START_OFFSET_Y = 100.0f;
+    const float START_OFFSET_Y = 100.0f * get_ui_scale();
     const float WOBBLE_FREQUENCY = 3.0f;
-    const float WOBBLE_AMPLITUDE = 80.0f;
+    const float WOBBLE_AMPLITUDE = 80.0f * get_ui_scale();
     const float CHAR_ANIMATION_OVERLAP = 0.95f;
 
     float sumTextWidthStart = 0.0f;
@@ -74,12 +65,12 @@ void draw_game_title(GameState *game_state) {
         );
 
         Vector2 startPosition = {
-            static_cast<float>(GetScreenWidth() / 2) - (sumTextWidthStart / 2) + current_offset_x_start,
+            static_cast<float>(get_display_width()) / 2 - (sumTextWidthStart / 2) + current_offset_x_start,
             0.0f + START_OFFSET_Y,
         };
 
         Vector2 endPosition = {
-            static_cast<float>(GetScreenWidth() / 2) - (sumTextWidthEnd / 2) + current_offset_x_end,
+            static_cast<float>(get_display_width()) / 2 - (sumTextWidthEnd / 2) + current_offset_x_end,
             0.0f,
         };
 
@@ -92,7 +83,7 @@ void draw_game_title(GameState *game_state) {
 
         // Quad interpolation
         Vector2 position = Vector2Lerp(startPosition, endPosition, ease_out_sine(elementAnimationProgress));
-        position = Vector2Add(position, TEXT_OFFEST);
+        position = Vector2Add(position, TEXT_OFFSET);
         position = Vector2Add(position, wobble);
 
         Color color = ColorLerp(TEXT_COLOR_START, TEXT_COLOR_END, elementAnimationProgress);
@@ -106,22 +97,37 @@ void draw_game_title(GameState *game_state) {
 void draw_start_message(GameState *game_state) {
     const float ANIMATION_DURATION = 1.5f;
     const float ANIMATION_DELAY = 5.0f;
-    const Vector2 TEXT_OFFEST = {0, 0.0f};
-    const float FONT_SIZE = 32.0f;
+    const float FONT_SIZE = 12.0f * get_ui_scale();
 
     const std::string text = "Press SPACE to Jump";
 
     Vector2 size = MeasureTextEx(menu_font, text.c_str(), FONT_SIZE, 1.0f);
 
-    float animation_progress = get_animation_value(game_state->main_menu_state.elapsed_time, ANIMATION_DURATION, ANIMATION_DELAY);
-    Vector2 position = Vector2Add(
-        Vector2{
-            (static_cast<float>(GetScreenWidth()) - size.x) / 2.0f,
-            (static_cast<float>(GetScreenHeight()) - size.y) / 2.0f
-        },
-        TEXT_OFFEST);
+    float animation_progress = get_animation_value(game_state->main_menu_state.elapsed_time, ANIMATION_DURATION,
+                                                   ANIMATION_DELAY
+    );
+    auto position = Vector2{
+        (static_cast<float>(get_display_width()) - size.x) / 2.0f,
+        (static_cast<float>(get_display_height()) - size.y) / 2.0f
+    };
     Color color = Fade(WHITE, animation_progress);
     DrawTextEx(menu_font, text.c_str(), position, FONT_SIZE, 1.0f, color);
+
+
+    // const Vector2 RECT_SIZE = { 80.0f, 60.0f };
+    //
+    // Vector2 position = Vector2Add(
+    //     Vector2{
+    //         (static_cast<float>(GetScreenWidth()) - RECT_SIZE.x) / 2.0f,
+    //         (static_cast<float>(GetScreenHeight()) - RECT_SIZE.y) / 2.0f
+    //     },
+    //     OFFSET);
+    // DrawRectangleRec(
+    //     Rectangle {
+    //         position.x, position.y,
+    //         RECT_SIZE.x, RECT_SIZE.y
+    //     },
+    //     WHITE);
 }
 
 void init_main_menu(GameState *game_state) {
@@ -136,12 +142,10 @@ void init_main_menu(GameState *game_state) {
     }
 
     auto rng = std::default_random_engine{};
-    std::shuffle(std::begin(game_state->main_menu_state.title_char_appearing_order),
-                 std::end(game_state->main_menu_state.title_char_appearing_order), rng
-    );
+    std::ranges::shuffle(game_state->main_menu_state.title_char_appearing_order, rng);
 }
 
-void update_menu(GameState* game_state, GameInput* game_input) {
+void update_menu(GameState *game_state, GameInput *game_input) {
     if (game_state->main_menu_state.elapsed_time > 5.0f && game_input->jump) {
         game_state->player->movement_locked = false;
         game_state->scene = Scene::LEVEL_SCENE;

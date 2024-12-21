@@ -5,47 +5,48 @@
 #include "level_scene.h"
 
 #include <globals.h>
-#include <graphics/text.h>
+#include <graphics/metrics.h>
 #include <level/tiles/air.h>
 #include <level/tiles/wall.h>
 
 #include "raymath.h"
 #include "box2d/box2d.h"
 
-void draw_game_overlay() {
-    Text score = {
-        "Score " + std::to_string(player_score),
-        { 0.50f, 0.05f },
-        48.0f
-    };
-    Text score_shadow = {
-        "Score " + std::to_string(player_score),
-        { 0.503f, 0.055f },
-        48.0f,
-        GRAY
-    };
-
-    draw_text(score_shadow);
-    draw_text(score);
-}
+// void draw_game_overlay() {
+//     Text score = {
+//         "Score " + std::to_string(player_score),
+//         { 0.50f, 0.05f },
+//         48.0f
+//     };
+//     Text score_shadow = {
+//         "Score " + std::to_string(player_score),
+//         { 0.503f, 0.055f },
+//         48.0f,
+//         GRAY
+//     };
+//
+//     draw_text(score_shadow);
+//     draw_text(score);
+// }
 
 void draw_level(Level *level, Assets *assets) {
+    float size = get_tile_screen_size(level);
+
     for (int row = 0; row < level->rows; ++row) {
         for (int column = 0; column < level->columns; ++column) {
-            Vector2 pos = {
-                shift_to_center.x + static_cast<float>(column) * cell_size,
-                shift_to_center.y + static_cast<float>(row) * cell_size
-            };
+            Vector2 pos = get_tile_screen_position(level, {
+                static_cast<float>(column), static_cast<float>(row)
+            });
 
             LevelTile tile = level->tiles[row * level->columns + column];
 
             switch (tile.type) {
                 case LevelTileType::AIR:
-                    draw_air(pos, cell_size, assets);
+                    draw_air(pos, size, assets);
                 break;
                 case LevelTileType::WALL:
                     char surroundings = get_surroundings(level, column, row);
-                draw_wall(pos, cell_size, surroundings, assets);
+                draw_wall(pos, size, surroundings, assets);
                 break;
             }
         }
@@ -59,14 +60,12 @@ void draw_level_debug_overlay(Level *level) {
         for (int i = 0; i < size; i++) {
             auto segment = b2Shape_GetSmoothSegment(shapes[i]);
 
-            Vector2 pos1 = {
-                shift_to_center.x + segment.segment.point1.x * cell_size,
-                shift_to_center.y + segment.segment.point1.y * cell_size
-            };
-            Vector2 pos2 = {
-                shift_to_center.x + segment.segment.point2.x * cell_size,
-                shift_to_center.y + segment.segment.point2.y * cell_size
-            };
+            Vector2 pos1 = get_tile_screen_position(level, {
+                segment.segment.point1.x, segment.segment.point1.y
+            });
+            Vector2 pos2 = get_tile_screen_position(level, {
+                segment.segment.point2.x, segment.segment.point2.y
+            });
 
             Vector2 dir = Vector2Subtract(pos2, pos1);
             Vector2 center = { (pos1.x + pos2.x) / 2.0f, (pos1.y + pos2.y) / 2.0f };
@@ -83,18 +82,18 @@ void draw_level_debug_overlay(Level *level) {
 }
 
 
-void draw_player(Player *player, Assets *assets) {
+void draw_player(Level* level, Player *player, Assets *assets) {
     if (player == nullptr)
         return;
 
     b2Vec2 player_pos = b2Body_GetPosition(player->body_id);
 
-    Vector2 pos = {
-        shift_to_center.x + (player_pos.x - 0.5f) * cell_size,
-        shift_to_center.y + (player_pos.y - 0.5f) * cell_size
-    };
+    Vector2 pos = get_tile_screen_position(level, {
+        player_pos.x - 0.5f, player_pos.y - 0.5f
+    });
+    float size = get_tile_screen_size(level);
 
-    Rectangle destination = { pos.x, pos.y, cell_size, cell_size };
+    Rectangle destination = { pos.x, pos.y, size, size };
     int frame_x = 0;
     int frame_y = 0;
 

@@ -7,20 +7,7 @@
 #include <cstddef>
 #include <level/level.h>
 
-/* Player data */
-
-const float GRAVITY_FORCE = 0.01f;
-const float JUMP_STRENGTH = 0.3f;
-const float MOVEMENT_SPEED = 0.1f;
-
 inline int player_score = 0;
-
-/* Graphic Metrics */
-
-inline Vector2 screen_size;
-inline float screen_scale; // Used to scale str/UI components size and displacements based on the screen_size size
-inline float cell_size;
-inline Vector2 shift_to_center;
 
 /* Fonts */
 
@@ -37,30 +24,10 @@ struct Text {
     Font* font = &menu_font;
 };
 
-inline Text game_subtitle = {
-    "Press Enter to Start",
-    { 0.50f, 0.65f }
-};
-
-inline Text game_paused = {
-    "Press Escape to Resume"
-};
-
-inline Text victory_title = {
-    "You Won!",
-    { 0.50f, 0.50f },
-    100.0f,
-    RED
-};
-
-inline Text victory_subtitle = {
-    "Press Enter to go back to menu",
-    { 0.50f, 0.65f }
-};
-
 /* Shaders */
 
 inline Shader crt_shader;
+inline Shader air_shader;
 
 /* Sounds */
 
@@ -92,7 +59,6 @@ inline size_t game_frame = 0;
 
 // GRAPHICS_H
 
-inline void derive_graphics_metrics_from_level(std::unique_ptr<Level> &level);
 inline void draw_pause_menu();
 inline void create_victory_menu_background();
 inline void animate_victory_menu_background();

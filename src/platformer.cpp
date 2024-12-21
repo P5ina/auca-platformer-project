@@ -3,6 +3,8 @@
 #include <gameobjects/player.h>
 #include <graphics/scene.h>
 #include <old_assets.h>
+#include <graphics/metrics.h>
+#include <graphics/scenes/level_scene.h>
 #include <graphics/scenes/menu.h>
 
 #include "raylib.h"
@@ -18,16 +20,24 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
         game_state->debug_mode = !game_state->debug_mode;
     }
 
+    int monitor = GetCurrentMonitor();
+    int monitor_width = GetMonitorWidth(monitor);
+    int monitor_height = GetMonitorHeight(monitor);
+
     if (inputs->toggle_full_screen) {
-        int width = GetMonitorWidth(0);
-        int height = GetMonitorHeight(0);
-        ToggleFullscreen();
+
         if (IsWindowFullscreen()) {
-            SetWindowSize(width, height);
+            ToggleFullscreen();
+            SetWindowSize(INITIAL_WIDTH, INITIAL_HEIGHT);
         } else {
-            SetWindowSize(1280, 720);
+            SetWindowSize(monitor_width, monitor_height);
+            ToggleFullscreen();
         }
-        derive_graphics_metrics_from_level(game_state->loaded_level);
+    }
+
+    if (IsWindowFullscreen() &&
+        (monitor_width != GetScreenWidth() || monitor_height != GetScreenHeight())) {
+        SetWindowSize(monitor_width, monitor_height);
     }
 
     update_player(game_state.get(), inputs.get(), delta);
@@ -70,7 +80,7 @@ int main() {
     const float PHYSICS_DELTA_TIME = 1.0f / 60.0f;
     const int PHYSICS_SUB_STEP = 4;
 
-    InitWindow(1280, 720, "Platformer");
+    InitWindow(INITIAL_WIDTH, INITIAL_HEIGHT, "Platformer");
     SetTargetFPS(60);
 
     auto game_state = std::make_unique<GameState>(GameState {

@@ -54,6 +54,7 @@ struct MainMenuState {
     float elapsed_time = 0.0f;
     bool fade_in = true;
     std::vector<int> title_char_appearing_order;
+    int menu_option = 0;
 };
 
 struct GameState {

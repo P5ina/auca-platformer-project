@@ -6,10 +6,12 @@
 
 void load_shaders() {
     crt_shader = LoadShader(nullptr, ASSETS_PATH"shaders/crt.frag");
+    air_shader = LoadShader(nullptr, ASSETS_PATH"shaders/air.frag");
 }
 
 void unload_shaders() {
     UnloadShader(crt_shader);
+    UnloadShader(air_shader);
 }
 
 void load_fonts() {

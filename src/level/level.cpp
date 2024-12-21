@@ -6,11 +6,11 @@
 
 #include <format>
 #include <global_state.h>
-#include <graphics_old.h>
 #include <queue>
 #include <string>
 #include <utilities.h>
 #include <gameobjects/player.h>
+#include <graphics/scenes/level_scene.h>
 
 #include "box2d/box2d.h"
 
@@ -25,8 +25,6 @@ void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position) 
     game_state->loaded_level = std::move(new_level);
 
     UnloadImage(level_image);
-
-    derive_graphics_metrics_from_level(game_state->loaded_level);
 }
 
 void unload_level(std::unique_ptr<GameState> &game_state) {
