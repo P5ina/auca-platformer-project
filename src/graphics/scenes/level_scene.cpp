@@ -51,6 +51,10 @@ void draw_level(Level *level, Assets *assets) {
             }
         }
     }
+
+    for (int i = 0; i < level->books.size(); i++) {
+        draw_book(level, &level->books[i], assets);
+    }
 }
 
 void draw_level_debug_overlay(Level *level) {
@@ -78,6 +82,10 @@ void draw_level_debug_overlay(Level *level) {
             Vector2 tri3 = Vector2Add(Vector2Subtract(pos2, Vector2Scale(dir, 0.2f)), Vector2Scale(n, 0.1f));
             DrawTriangle(tri1, pos2, tri3, RED);
         }
+    }
+
+    for (int i = 0; i < level->books.size(); i++) {
+        draw_book_debug_overlay(level, &level->books[i]);
     }
 }
 
@@ -119,3 +127,63 @@ void draw_player(Level* level, Player *player, Assets *assets) {
     Rectangle source = { frame_x * 8.0f, frame_y * 8.0f, 8.0f, 8.0f };
     DrawTexturePro(*assets->images->player_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
 }
+
+void draw_player_debug_overlay(Level *level, Player *player) {
+    if (player == nullptr)
+        return;
+
+    b2Vec2 player_pos = b2Body_GetPosition(player->body_id);
+
+    auto *shapes = new b2ShapeId[1];
+    b2Body_GetShapes(player->body_id, shapes, 1);
+
+    b2Capsule capsule = b2Shape_GetCapsule(shapes[0]);
+
+    Vector2 pos1 = get_tile_screen_position(level, {
+        player_pos.x + capsule.center1.x, player_pos.y + capsule.center1.y
+    });
+    Vector2 pos2 = get_tile_screen_position(level, {
+        player_pos.x + capsule.center2.x, player_pos.y + capsule.center2.y
+    });
+    float size = capsule.radius * get_tile_screen_size(level);
+
+    DrawCircleV(pos1, size, Fade(GREEN, 0.5f));
+    DrawCircleV(pos2, size, Fade(GREEN, 0.5f));
+}
+
+
+void draw_book(Level* level, KnowledgeBook* book, Assets* assets) {
+    if (book->collected)
+        return;
+
+    b2Vec2 book_pos = b2Body_GetPosition(book->body_id);
+
+    Vector2 pos = get_tile_screen_position(level, {
+        book_pos.x - 0.5f, book_pos.y - 0.5f
+    });
+    float size = get_tile_screen_size(level);
+
+    Rectangle destination = { pos.x, pos.y, size, size };
+    Rectangle source = {
+        0, 0,
+        static_cast<float>(assets->images->book_texture.width),
+        static_cast<float>(assets->images->book_texture.height)
+    };
+
+    DrawTexturePro(assets->images->book_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+}
+
+void draw_book_debug_overlay(Level *level, KnowledgeBook *book) {
+    if (book->collected)
+        return;
+
+    b2Vec2 book_pos = b2Body_GetPosition(book->body_id);
+
+    Vector2 pos = get_tile_screen_position(level, {
+        book_pos.x, book_pos.y
+    });
+    float size = get_tile_screen_size(level);
+
+    DrawCircleV(pos, size / 2, Fade(GREEN, 0.2f));
+}
+

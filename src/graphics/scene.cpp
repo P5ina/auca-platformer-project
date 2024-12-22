@@ -31,7 +31,6 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
         }
         case Scene::LEVEL_SCENE: {
             draw_level_scene(game_state.get());
-            draw_player(game_state->loaded_level.get(), game_state->player.get(), game_state->assets.get());
             draw_dialogue(game_state->loaded_dialogue.get(), game_state->assets.get());
             // draw_game_overlay();
             break;
@@ -45,8 +44,10 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
 
 void draw_level_scene(GameState *game_state) {
     draw_level(game_state->loaded_level.get(), game_state->assets.get());
+    draw_player(game_state->loaded_level.get(), game_state->player.get(), game_state->assets.get());
     if (game_state->debug_mode) {
         draw_level_debug_overlay(game_state->loaded_level.get());
+        draw_player_debug_overlay(game_state->loaded_level.get(), game_state->player.get());
     }
 }
 

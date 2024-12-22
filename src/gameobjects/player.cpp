@@ -8,12 +8,13 @@
 #include <iostream>
 #include <sys/stat.h>
 
+#include "gameobject_user_data.h"
 #include "box2d/box2d.h"
 
 void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position) {
     b2BodyDef player_body_def = b2DefaultBodyDef();
     player_body_def.type = b2_dynamicBody;
-    player_body_def.position = {position.x + 0.5f, position.y - 0.5f};
+    player_body_def.position = {position.x, position.y - 0.5f};
     player_body_def.fixedRotation = true;
     b2BodyId player_body_id = b2CreateBody(game_state->loaded_level->world_id, &player_body_def);
 
@@ -21,21 +22,27 @@ void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position) {
     shape_def.density = 10.0f; // kg/m^2
     shape_def.friction = 0.0f;
     shape_def.filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
-    shape_def.filter.maskBits = PhysicsLayers::WALL_LAYER | PhysicsLayers::GHOST_LAYER;
+    shape_def.filter.maskBits = PhysicsLayers::WALL_LAYER | PhysicsLayers::GHOST_LAYER |
+                                PhysicsLayers::COLLECTABLE_LAYER;
+    shape_def.userData = new GameObjectUserData{
+        .type = GAME_OBJECT_PLAYER
+    };
+
     const float height = 0.9f;
     const float radius = 0.3f;
     b2Capsule collider = {
         .center1 = {0, 0.5f - radius},
-        .center2 = {0, 0.5f - height + radius },
+        .center2 = {0, 0.5f - height + radius},
         .radius = radius
     };
     b2CreateCapsuleShape(player_body_id, &shape_def, &collider);
 
-    game_state->player = std::make_unique<Player>(Player {
-        .body_id = player_body_id,
-        // Quick fix for jump animation
-        .jump_timer = 100.0f,
-    });
+    game_state->player = std::make_unique<Player>(Player{
+            .body_id = player_body_id,
+            // Quick fix for jump animation
+            .jump_timer = 100.0f,
+        }
+    );
 }
 
 void despawn_player(std::unique_ptr<GameState> &game_state) {
@@ -64,8 +71,7 @@ void update_player(GameState *game_state, GameInput *game_input, float delta) {
 
     if (velocity.x > 0) {
         game_state->player->is_facing_left = false;
-    }
-    else if (velocity.x < 0) {
+    } else if (velocity.x < 0) {
         game_state->player->is_facing_left = true;
     }
 
@@ -93,8 +99,8 @@ struct GroundCastContext {
     bool is_hit;
 };
 
-float ground_cast_callback(b2ShapeId shape_id, b2Vec2 point, b2Vec2 normal, float fraction, void* context) {
-    auto* ground_cast_context = static_cast<GroundCastContext *>(context);
+float ground_cast_callback(b2ShapeId shape_id, b2Vec2 point, b2Vec2 normal, float fraction, void *context) {
+    auto *ground_cast_context = static_cast<GroundCastContext *>(context);
     ground_cast_context->is_hit = true;
     return fraction;
 }
@@ -105,7 +111,7 @@ bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
     b2Body_GetShapes(player->body_id, shapes, 1);
     b2Capsule player_capsule = b2Shape_GetCapsule(shapes[0]);
 
-    b2Capsule cast_capsule = b2Capsule {
+    b2Capsule cast_capsule = b2Capsule{
         .center1 = player_capsule.center1,
         .center2 = player_capsule.center2,
         .radius = player_capsule.radius - 0.05f

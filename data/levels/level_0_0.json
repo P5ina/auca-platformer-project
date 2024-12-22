@@ -2,8 +2,8 @@
   "books": [
     {
       "position": {
-        "x": 7.5,
-        "y": 5
+        "x": 8,
+        "y": 5.5
       },
       "dialogue_lines": [
         "Welcome to Deep Woods. My name is DAMAGED@FILE. To move to the next   page in the book press left mouse button.",

@@ -41,6 +41,7 @@ std::unique_ptr<Level> load_level(Vector2i position) {
 
 void unload_level(std::unique_ptr<Level> level) {
     b2DestroyWorld(level->world_id);
+    level->world_id = b2_nullWorldId;
 }
 
 b2ChainDef create_wall_chain(Level *level, Vector2i start_position) {
@@ -186,8 +187,13 @@ std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *jso
     // Calculate shapes for walls
     create_level_collisions(level.get());
 
-    LevelFileData data = json_data->template get<LevelFileData>();
-    std::cout << data.books[0].dialogue_lines[0] << std::endl;
+    auto data = json_data->template get<LevelFileData>();
+    level->books = std::vector<KnowledgeBook>(data.books.size());
+    for (int i = 0; i < data.books.size(); i++) {
+        data.books[i].id = i;
+        level->books[i] = data.books[i];
+        init_knowledge_book(world_id, &level->books[i]);
+    }
 
     return level;
 }

@@ -7,8 +7,13 @@
 #include <global_state.h>
 #include <level/level.h>
 
-void draw_player(Level* level, Player* player, Assets* assets);
 void draw_level(Level* level, Assets* assets);
 void draw_level_debug_overlay(Level* level);
+
+void draw_player(Level* level, Player* player, Assets* assets);
+void draw_player_debug_overlay(Level* level, Player* player);
+
+void draw_book(Level* level, KnowledgeBook* book, Assets* assets);
+void draw_book_debug_overlay(Level* level, KnowledgeBook* book);
 
 #endif //LEVEL_SCENE_H

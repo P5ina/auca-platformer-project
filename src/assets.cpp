@@ -18,6 +18,7 @@ std::unique_ptr<AssetImages> load_images() {
     asset_images->wall_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/wall/wall.png"));
     asset_images->air_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/air.png"));
     asset_images->player_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/player/player.png"));
+    asset_images->book_texture = LoadTexture(ASSETS_PATH"images/collectables/knowledge_book.png");
     return asset_images;
 }
 
@@ -28,6 +29,7 @@ void unload_images(std::unique_ptr<AssetImages> asset_images) {
     UnloadTexture(*asset_images->wall_texture);
     UnloadTexture(*asset_images->air_texture);
     UnloadTexture(*asset_images->player_texture);
+    UnloadTexture(asset_images->book_texture);
 }
 
 std::unique_ptr<AssetSounds> load_sounds() {
@@ -50,7 +52,7 @@ std::unique_ptr<AssetSounds> load_sounds() {
 }
 
 void unload_sounds(std::unique_ptr<AssetSounds> asset_sounds) {
-    for (const auto & i : asset_sounds->dialogue_sound_pool) {
+    for (const auto &i: asset_sounds->dialogue_sound_pool) {
         UnloadSoundAlias(i);
     }
 
@@ -58,4 +60,3 @@ void unload_sounds(std::unique_ptr<AssetSounds> asset_sounds) {
     UnloadSound(*asset_sounds->dialogue_sound);
     UnloadMusicStream(*asset_sounds->main_menu_music);
 }
-
