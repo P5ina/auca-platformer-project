@@ -12,6 +12,10 @@ GameInput read_game_input() {
         .select_up_pressed = false,
         .select_down_pressed = false,
         .select_pressed = false,
+
+        .magnet_pull = false,
+        .magnet_push = false,
+
         .jump = false,
         .toggle_debug_mode = false,
         .toggle_full_screen = false,
@@ -33,6 +37,13 @@ GameInput read_game_input() {
     }
     if (IsKeyPressed(KeyboardKey::KEY_SPACE) | IsKeyPressed(KeyboardKey::KEY_ENTER)) {
         game_input.select_pressed = true;
+    }
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(KEY_Q)) {
+        game_input.magnet_push = true;
+    }
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(KEY_E)) {
+        game_input.magnet_pull = true;
     }
 
     if (IsKeyDown(KeyboardKey::KEY_SPACE)) {

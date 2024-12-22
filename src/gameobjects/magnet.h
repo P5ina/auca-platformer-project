@@ -5,6 +5,7 @@
 #ifndef MAGNET_H
 #define MAGNET_H
 #include <assets.h>
+#include <input.h>
 
 #include "raylib.h"
 #include "box2d/box2d.h"
@@ -16,7 +17,7 @@ struct MagnetCursor {
     bool is_push;
 };
 
-void update_magnet_cursor(MagnetCursor* magnet_cursor);
+void update_magnet_cursor(MagnetCursor* magnet_cursor, GameInput* game_input);
 void draw_magnet_cursor(MagnetCursor* magnet_cursor, Assets* assets);
 
 #endif //MAGNET_H

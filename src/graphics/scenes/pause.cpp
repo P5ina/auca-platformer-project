@@ -39,6 +39,7 @@ void update_pause_menu(PauseMenuState *state, GameInput *game_input) {
         switch (state->selected_option) {
             case PAUSE_OPTION_CONTINUE: {
                 state->is_paused = false;
+                DisableCursor();
                 break;
             }
             case PAUSE_OPTION_EXIT: {

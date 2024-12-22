@@ -81,6 +81,6 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
             game_state->loaded_dialogue = nullptr;
         }
 
-        update_magnet_cursor(&game_state->player->magnet_cursor);
+        update_magnet_cursor(&game_state->player->magnet_cursor, inputs.get());
     }
 }

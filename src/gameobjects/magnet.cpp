@@ -9,7 +9,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
-void update_magnet_cursor(MagnetCursor *magnet_cursor) {
+void update_magnet_cursor(MagnetCursor *magnet_cursor, GameInput* game_input) {
     float ui_scale = get_ui_scale();
     float cursor_size = 30.0f * ui_scale;
 
@@ -19,6 +19,9 @@ void update_magnet_cursor(MagnetCursor *magnet_cursor) {
     Vector2 cursor_pos = magnet_cursor->position;
     Vector2 mouse_delta = GetMouseDelta();
     float mouse_sens = 1.0f;
+
+    magnet_cursor->is_pull = game_input->magnet_pull;
+    magnet_cursor->is_push = game_input->magnet_push;
 
     cursor_pos = Vector2Add(cursor_pos, Vector2Scale(mouse_delta, mouse_sens));
 
@@ -42,7 +45,16 @@ void draw_magnet_cursor(MagnetCursor *magnet_cursor, Assets *assets) {
     float cursor_size = 26.0f * ui_scale;
 
     Texture2D texture = assets->images->magnet_cursor;
-    Rectangle source = { 0, 0, 8, 8 };
+
+    float frame = 0;
+    if (magnet_cursor->is_pull) {
+        frame += 1;
+    }
+    if (magnet_cursor->is_push) {
+        frame += 2;
+    }
+
+    Rectangle source = { 8.0f * frame, 0, 8, 8 };
     Rectangle dest = {
         magnet_cursor->position.x - cursor_size / 2, magnet_cursor->position.y - cursor_size / 2,
         cursor_size, cursor_size
