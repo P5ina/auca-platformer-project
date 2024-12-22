@@ -33,6 +33,7 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
             draw_level_scene(game_state.get());
             draw_dialogue(game_state->loaded_dialogue.get(), game_state->assets.get());
             // draw_game_overlay();
+            draw_pause_menu(&game_state->pause_menu_state, game_state->assets.get());
             break;
         }
         default: {

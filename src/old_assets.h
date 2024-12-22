@@ -22,14 +22,4 @@ void unload_fonts() {
     UnloadFont(menu_font);
 }
 
-void draw_image(Texture2D image, Vector2 pos, float size) {
-    draw_image(image, pos, size, size);
-}
-
-void draw_image(Texture2D image, Vector2 pos, float width, float height) {
-    Rectangle source = { 0.0f, 0.0f, static_cast<float>(image.width), static_cast<float>(image.height) };
-    Rectangle destination = { pos.x, pos.y, width, height };
-    DrawTexturePro(image, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
-}
-
 #endif // OLD_ASSETS_H

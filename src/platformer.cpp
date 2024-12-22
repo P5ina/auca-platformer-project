@@ -82,6 +82,8 @@ int main() {
     InitWindow(INITIAL_WIDTH, INITIAL_HEIGHT, "Platformer");
     SetTargetFPS(60);
 
+    SetExitKey(KEY_NULL);
+
     auto game_state = std::make_unique<GameState>(GameState{
             .scene = Scene::MENU_SCENE,
             .assets = std::make_unique<Assets>(),
@@ -93,16 +95,19 @@ int main() {
     load_shaders();
     game_state->assets->sounds = load_sounds();
     game_state->loaded_level = load_level({0, 0});
-    spawn_player(game_state, {8, 8}, { 0, 0 });
+    spawn_player(game_state, PLAYER_SPAWN, { 0, 0 });
     init_main_menu(game_state.get());
 
     RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
-    while (!WindowShouldClose()) {
-        if (game_state != nullptr && game_state->loaded_level != nullptr) {
-            b2World_Step(game_state->loaded_level->world_id, PHYSICS_DELTA_TIME, PHYSICS_SUB_STEP);
+    while (!(WindowShouldClose() || game_state->close)) {
+
+        if (!game_state->pause_menu_state.is_paused) {
+            if (game_state != nullptr && game_state->loaded_level != nullptr) {
+                b2World_Step(game_state->loaded_level->world_id, PHYSICS_DELTA_TIME, PHYSICS_SUB_STEP);
+            }
+            process_events(game_state.get());
         }
-        process_events(game_state.get());
         update_game(game_state, PHYSICS_DELTA_TIME);
         draw_game(game_state, target);
     }

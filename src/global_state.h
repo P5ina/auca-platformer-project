@@ -10,9 +10,12 @@
 #include <vector>
 #include <graphics/scene.h>
 #include <graphics/scenes/dialogue.h>
+#include <graphics/scenes/pause.h>
 #include <level/level.h>
 
 #include "box2d/id.h"
+
+constexpr Vector2 PLAYER_SPAWN = { 8, 8 };
 
 struct Player {
     b2BodyId body_id;
@@ -36,7 +39,9 @@ struct GameState {
     std::unique_ptr<Assets> assets;
     Vector2i last_resolution;
     bool debug_mode = false;
+    bool close = false;
     MainMenuState main_menu_state;
+    PauseMenuState pause_menu_state;
 };
 
 void update_game(std::unique_ptr<GameState> &game_state, float delta);

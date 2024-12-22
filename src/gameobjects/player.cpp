@@ -159,10 +159,10 @@ Vector2i get_next_level_offset(const Level* level, const Player* player) {
     if (pos.y < 0) {
         return Vector2i { 0, -1 };
     }
-    if (pos.x > static_cast<float>(level->columns)) {
+    if (pos.x > static_cast<float>(level->columns) - 0.1f) {
         return Vector2i { 1, 0 };
     }
-    if (pos.y > static_cast<float>(level->rows) - 0.1f) {
+    if (pos.y > static_cast<float>(level->rows)) {
         return Vector2i { 0, 1 };
     }
 

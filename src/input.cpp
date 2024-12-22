@@ -7,8 +7,11 @@
 #include "raylib.h"
 
 GameInput read_game_input() {
-    GameInput game_input = GameInput {
+    auto game_input = GameInput {
         .horizontal_movement = 0.0f,
+        .select_up_pressed = false,
+        .select_down_pressed = false,
+        .select_pressed = false,
         .jump = false,
         .toggle_debug_mode = false,
         .toggle_full_screen = false,
@@ -22,6 +25,16 @@ GameInput read_game_input() {
         game_input.horizontal_movement -= 1.0f;
     }
 
+    if (IsKeyPressed(KeyboardKey::KEY_W) | IsKeyPressed(KeyboardKey::KEY_UP)) {
+        game_input.select_up_pressed = true;
+    }
+    if (IsKeyPressed(KeyboardKey::KEY_S) | IsKeyPressed(KeyboardKey::KEY_DOWN)) {
+        game_input.select_down_pressed = true;
+    }
+    if (IsKeyPressed(KeyboardKey::KEY_SPACE) | IsKeyPressed(KeyboardKey::KEY_ENTER)) {
+        game_input.select_pressed = true;
+    }
+
     if (IsKeyDown(KeyboardKey::KEY_SPACE)) {
         game_input.jump = true;
     }
@@ -32,6 +45,10 @@ GameInput read_game_input() {
 
     if (IsKeyPressed(KeyboardKey::KEY_F5)) {
         game_input.toggle_full_screen = true;
+    }
+
+    if (IsKeyPressed(KeyboardKey::KEY_ESCAPE)) {
+        game_input.pause_pressed = true;
     }
 
     if (IsMouseButtonPressed(0)) {

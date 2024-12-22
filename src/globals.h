@@ -53,7 +53,6 @@ inline size_t game_frame = 0;
 
 // GRAPHICS_H
 
-inline void draw_pause_menu();
 inline void create_victory_menu_background();
 inline void animate_victory_menu_background();
 inline void draw_victory_menu_background();
@@ -66,8 +65,5 @@ void unload_shaders();
 
 void load_fonts();
 void unload_fonts();
-
-void draw_image(Texture2D image, Vector2 pos, float width, float height);
-void draw_image(Texture2D image, Vector2 pos, float size);
 
 #endif // GLOBALS_H

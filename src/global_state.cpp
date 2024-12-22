@@ -38,30 +38,44 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
         SetWindowSize(monitor_width, monitor_height);
     }
 
-    update_player(game_state.get(), inputs.get(), delta);
-    update_dialogue(game_state->loaded_dialogue.get(), inputs.get(), game_state->assets.get());
+    if (game_state->scene == Scene::MENU_SCENE) {
+        update_menu(game_state.get(), inputs.get());
+    }
 
-    Vector2i level_offset = get_next_level_offset(game_state->loaded_level.get(), game_state->player.get());
-    if (level_offset.x != 0 || level_offset.y != 0) {
-        std::cout << "MOVE TO NEXT LEVEL" << std::endl;
-        Vector2i next_level = vector2i_add(game_state->loaded_level->position, level_offset);
-        if (has_level(next_level)) {
-            Vector2 next_position = get_next_level_player_position(game_state->loaded_level.get(), game_state->player.get());
-            b2Vec2 velocity = b2Body_GetLinearVelocity(game_state->player->body_id);
+    if (game_state->scene == Scene::LEVEL_SCENE) {
+        update_pause_menu(&game_state->pause_menu_state, inputs.get());
+        if (game_state->pause_menu_state.next_scene != std::nullopt) {
             despawn_player(game_state);
             unload_level(std::move(game_state->loaded_level));
-            game_state->loaded_level = load_level(next_level);
-            spawn_player(game_state, next_position, velocity);
-        } else {
-            clamp_player_position(game_state->loaded_level.get(), game_state->player.get());
+
+            game_state->loaded_level = load_level({ 0, 0 });
+            game_state->loaded_dialogue = nullptr;
+            spawn_player(game_state, PLAYER_SPAWN, { 0, 0 });
+            game_state->scene = Scene::MENU_SCENE;
+            init_main_menu(game_state.get());
+            game_state->pause_menu_state.next_scene = std::nullopt;
         }
     }
 
-    if (is_dialogue_ended(game_state->loaded_dialogue.get()) && game_state->loaded_dialogue != nullptr) {
-        game_state->loaded_dialogue = nullptr;
-    }
+    if (!game_state->pause_menu_state.is_paused) {
+        update_player(game_state.get(), inputs.get(), delta);
+        update_dialogue(game_state->loaded_dialogue.get(), inputs.get(), game_state->assets.get());
+        Vector2i level_offset = get_next_level_offset(game_state->loaded_level.get(), game_state->player.get());
+        if (level_offset.x != 0 || level_offset.y != 0) {
+            Vector2i next_level = vector2i_add(game_state->loaded_level->position, level_offset);
+            if (has_level(next_level)) {
+                Vector2 next_position = get_next_level_player_position(game_state->loaded_level.get(), game_state->player.get());
+                b2Vec2 velocity = b2Body_GetLinearVelocity(game_state->player->body_id);
+                despawn_player(game_state);
+                unload_level(std::move(game_state->loaded_level));
+                game_state->loaded_level = load_level(next_level);
+                spawn_player(game_state, next_position, velocity);
+            }
+        }
+        clamp_player_position(game_state->loaded_level.get(), game_state->player.get());
 
-    if (game_state->scene == Scene::MENU_SCENE) {
-        update_menu(game_state.get(), inputs.get());
+        if (is_dialogue_ended(game_state->loaded_dialogue.get()) && game_state->loaded_dialogue != nullptr) {
+            game_state->loaded_dialogue = nullptr;
+        }
     }
 }
