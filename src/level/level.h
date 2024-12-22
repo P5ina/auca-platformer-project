@@ -8,6 +8,7 @@
 #include <optional>
 #include <utilities.h>
 #include <gameobjects/knowledge_book.h>
+#include <gameobjects/magnetic_box.h>
 
 #include "raylib.h"
 #include "box2d/box2d.h"
@@ -18,6 +19,7 @@ const std::string MAGNET_BLOCK_COLOR = "#595652";
 
 struct LevelFileData {
     std::vector<KnowledgeBook> books;
+    std::vector<MagneticBox> magnetic_boxes;
 };
 
 enum class LevelTileType {
@@ -40,6 +42,7 @@ struct Level {
     std::vector<LevelTile> tiles;
     std::vector<b2BodyId> wall_bodies;
     std::vector<KnowledgeBook> books;
+    std::vector<MagneticBox> magnetic_boxes;
 };
 
 

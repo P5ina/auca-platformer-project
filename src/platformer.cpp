@@ -57,6 +57,10 @@ void process_events(GameState* game_state) {
         auto *visitor_user_data = static_cast<GameObjectUserData *>(b2Shape_GetUserData(beginTouch->visitorShapeId));
         auto *sensor_user_data = static_cast<GameObjectUserData *>(b2Shape_GetUserData(beginTouch->sensorShapeId));
 
+        if (visitor_user_data == nullptr || sensor_user_data == nullptr) {
+            continue;
+        }
+
         if (visitor_user_data->type == GAME_OBJECT_PLAYER &&
             sensor_user_data->type == GAME_OBJECT_KNOWLEDGE_BOOK) {
             std::cout << "Book touched" << std::endl;

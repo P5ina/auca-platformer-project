@@ -197,7 +197,7 @@ bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
 
     b2QueryFilter filter;
     filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
-    filter.maskBits = PhysicsLayers::WALL_LAYER;
+    filter.maskBits = PhysicsLayers::WALL_LAYER | PhysicsLayers::MAGNET_BLOCK_LAYER;
 
     b2World_CastCapsule(world_id, &cast_capsule, origin_transform, direction, filter, ground_cast_callback, &context);
 

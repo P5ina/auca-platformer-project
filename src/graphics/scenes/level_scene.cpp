@@ -5,6 +5,7 @@
 #include "level_scene.h"
 
 #include <globals.h>
+#include <iostream>
 #include <graphics/metrics.h>
 #include <level/tiles/air.h>
 #include <level/tiles/magnet_block.h>
@@ -61,6 +62,10 @@ void draw_level(Level *level, Assets *assets) {
 
     for (int i = 0; i < level->books.size(); i++) {
         draw_book(level, &level->books[i], assets);
+    }
+
+    for (int i = 0; i < level->magnetic_boxes.size(); i++) {
+        draw_magnetic_box(level, &level->magnetic_boxes[i], assets);
     }
 }
 
@@ -166,7 +171,7 @@ void draw_book(Level* level, KnowledgeBook* book, Assets* assets) {
     b2Vec2 book_pos = b2Body_GetPosition(book->body_id);
 
     Vector2 pos = get_tile_screen_position(level, {
-        book_pos.x - 0.5f, book_pos.y - 0.5f
+        book_pos.x, book_pos.y
     });
     float size = get_tile_screen_size(level);
 
@@ -177,7 +182,8 @@ void draw_book(Level* level, KnowledgeBook* book, Assets* assets) {
         static_cast<float>(assets->images->book_texture.height)
     };
 
-    DrawTexturePro(assets->images->book_texture, source, destination, { 0.0f, 0.0f }, 0.0f, WHITE);
+    DrawTexturePro(assets->images->book_texture, source, destination,
+        { destination.width / 2, destination.height / 2 }, 0.0f, WHITE);
 }
 
 void draw_book_debug_overlay(Level *level, KnowledgeBook *book) {
@@ -194,3 +200,22 @@ void draw_book_debug_overlay(Level *level, KnowledgeBook *book) {
     DrawCircleV(pos, size / 2, Fade(GREEN, 0.2f));
 }
 
+void draw_magnetic_box(Level *level, MagneticBox *magnetic_box, Assets *assets) {
+    b2Vec2 box_pos = b2Body_GetPosition(magnetic_box->body_id);
+    b2Rot box_rot = b2Body_GetRotation(magnetic_box->body_id);
+
+    Vector2 pos = get_tile_screen_position(level, {
+        box_pos.x, box_pos.y
+    });
+    const float size = get_tile_screen_size(level);
+
+    const Rectangle destination = { pos.x, pos.y, size, size };
+    const Rectangle source = {
+        0, 0,
+        static_cast<float>(assets->images->book_texture.width),
+        static_cast<float>(assets->images->book_texture.height)
+    };
+
+    DrawTexturePro(assets->images->magnet_box_texture, source, destination,
+        { destination.width / 2, destination.height / 2 }, b2Rot_GetAngle(box_rot) / PI * 180, WHITE);
+}

@@ -9,6 +9,7 @@ enum GameObjectType {
     GAME_OBJECT_PLAYER,
     GAME_OBJECT_KNOWLEDGE_BOOK,
     GAME_OBJECT_MAGNET_BLOCK,
+    GAME_OBJECT_MAGNET_BOX
 };
 
 struct GameObjectUserData {

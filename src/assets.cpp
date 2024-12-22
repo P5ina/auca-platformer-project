@@ -17,6 +17,7 @@ std::unique_ptr<AssetImages> load_images() {
     );
     asset_images->wall_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/wall/wall.png"));
     asset_images->magnet_block_texture = LoadTexture(ASSETS_PATH"images/wall/magnet_block.png");
+    asset_images->magnet_box_texture = LoadTexture(ASSETS_PATH"images/wall/magnet_box.png");
     asset_images->air_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/air.png"));
     asset_images->player_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/player/player.png"));
     asset_images->book_texture = LoadTexture(ASSETS_PATH"images/collectables/knowledge_book.png");
@@ -33,6 +34,7 @@ void unload_images(std::unique_ptr<AssetImages> asset_images) {
     UnloadTexture(*asset_images->dialogue_indicator_texture);
     UnloadTexture(*asset_images->wall_texture);
     UnloadTexture(asset_images->magnet_block_texture);
+    UnloadTexture(asset_images->magnet_box_texture);
     UnloadTexture(*asset_images->air_texture);
     UnloadTexture(*asset_images->player_texture);
     UnloadTexture(asset_images->book_texture);

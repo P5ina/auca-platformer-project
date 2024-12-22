@@ -2,7 +2,7 @@
   "books": [
     {
       "position": {
-        "x": 5.5,
+        "x": 5.6,
         "y": 1.5
       },
       "dialogue_lines": [
@@ -10,6 +10,14 @@
         "Maybe I can go with them somehow?",
         "Wait, but they only deal damage if you touch them or stop touching them, maybe I could use that."
       ]
+    }
+  ],
+  "magnetic_boxes": [
+    {
+      "position": {
+        "x": 7,
+        "y": 1.5
+      }
     }
   ]
 }

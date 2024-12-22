@@ -5,7 +5,6 @@
 #ifndef KNOWLEDGE_BOOK_H
 #define KNOWLEDGE_BOOK_H
 
-#include <assets.h>
 #include <vector>
 #include <nlohmann/json.hpp>
 

@@ -7,22 +7,22 @@
 #include <format>
 #include <fstream>
 #include <global_state.h>
-#include <iostream>
 #include <queue>
 #include <string>
 #include <utilities.h>
 #include <gameobjects/gameobject_user_data.h>
-#include <gameobjects/player.h>
 #include <nlohmann/json.hpp>
 
 #include "box2d/box2d.h"
 
 void to_json(nlohmann::json& j, const LevelFileData& d) {
     j = nlohmann::json{ {"books", d.books} };
+    j = nlohmann::json{ {"magnetic_boxes", d.magnetic_boxes} };
 }
 
 void from_json(const nlohmann::json& j, LevelFileData& d) {
     j.at("books").get_to(d.books);
+    j.at("magnetic_boxes").get_to(d.magnetic_boxes);
 }
 
 bool has_level(Vector2i position) {
@@ -160,7 +160,7 @@ void create_level_collisions(Level *level) {
 
             b2ChainDef chain_def = create_wall_chain(level, { x, y });
             chain_def.filter.categoryBits = PhysicsLayers::WALL_LAYER;
-            chain_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER;
+            chain_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER | PhysicsLayers::MAGNET_BLOCK_LAYER;
 
             b2CreateChain(wall_body_id, &chain_def);
             level->wall_bodies.push_back(wall_body_id);
@@ -198,11 +198,19 @@ std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *jso
     create_level_collisions(level.get());
 
     auto data = json_data->template get<LevelFileData>();
+
     level->books = std::vector<KnowledgeBook>(data.books.size());
     for (int i = 0; i < data.books.size(); i++) {
         data.books[i].id = i;
         level->books[i] = data.books[i];
         init_knowledge_book(world_id, &level->books[i]);
+    }
+
+    level->magnetic_boxes = std::vector<MagneticBox>(data.magnetic_boxes.size());
+    for (int i = 0; i < data.magnetic_boxes.size(); i++) {
+        // data.magnetic_boxes[i];
+        level->magnetic_boxes[i] = data.magnetic_boxes[i];
+        init_magnetic_box(world_id, &level->magnetic_boxes[i]);
     }
 
     return level;
