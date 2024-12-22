@@ -6,6 +6,7 @@
 
 #include <globals.h>
 #include <iostream>
+#include <graphics/metrics.h>
 #include <sys/stat.h>
 
 #include "gameobject_user_data.h"
@@ -42,6 +43,12 @@ void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position, b2Ve
             .body_id = player_body_id,
             // Quick fix for jump animation
             .jump_timer = 100.0f,
+            .magnet_cursor = {
+                .position = {
+                    static_cast<float>(get_display_width()) / 2,
+                    static_cast<float>(get_display_height()) / 2,
+                }
+            }
         }
     );
 }

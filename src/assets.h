@@ -17,6 +17,7 @@ struct AssetImages {
     std::unique_ptr<Texture2D> player_texture;
     Texture2D book_texture;
     Texture2D pointer_texture;
+    Texture2D magnet_cursor;
 };
 
 struct AssetSounds {

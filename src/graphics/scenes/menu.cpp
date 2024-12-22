@@ -157,6 +157,7 @@ void update_menu(GameState *game_state, GameInput *game_input) {
         game_state->scene = Scene::LEVEL_SCENE;
 
         jump_player(game_state);
+        DisableCursor();
 
         // game_state->loaded_dialogue = std::make_unique<Dialogue>(Dialogue {
         //     .lines = {

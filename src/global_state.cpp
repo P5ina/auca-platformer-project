@@ -6,6 +6,7 @@
 
 #include <globals.h>
 #include <iostream>
+#include <gameobjects/magnet.h>
 #include <gameobjects/player.h>
 #include <graphics/metrics.h>
 #include <graphics/scenes/menu.h>
@@ -54,10 +55,12 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
             game_state->scene = Scene::MENU_SCENE;
             init_main_menu(game_state.get());
             game_state->pause_menu_state.next_scene = std::nullopt;
+
+            EnableCursor();
         }
     }
 
-    if (!game_state->pause_menu_state.is_paused) {
+    if (!game_state->pause_menu_state.is_paused && game_state->scene == Scene::LEVEL_SCENE) {
         update_player(game_state.get(), inputs.get(), delta);
         update_dialogue(game_state->loaded_dialogue.get(), inputs.get(), game_state->assets.get());
         Vector2i level_offset = get_next_level_offset(game_state->loaded_level.get(), game_state->player.get());
@@ -77,5 +80,7 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
         if (is_dialogue_ended(game_state->loaded_dialogue.get()) && game_state->loaded_dialogue != nullptr) {
             game_state->loaded_dialogue = nullptr;
         }
+
+        update_magnet_cursor(&game_state->player->magnet_cursor);
     }
 }

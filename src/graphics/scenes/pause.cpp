@@ -15,8 +15,11 @@ void update_pause_menu(PauseMenuState *state, GameInput *game_input) {
     if (game_input->pause_pressed) {
         state->is_paused = !state->is_paused;
         if (state->is_paused) {
+            EnableCursor();
             state->selected_option = 0;
             state->next_scene = std::nullopt;
+        } else {
+            DisableCursor();
         }
     }
 

@@ -8,6 +8,7 @@
 #include <memory>
 #include <utilities.h>
 #include <vector>
+#include <gameobjects/magnet.h>
 #include <graphics/scene.h>
 #include <graphics/scenes/dialogue.h>
 #include <graphics/scenes/pause.h>
@@ -19,6 +20,7 @@ constexpr Vector2 PLAYER_SPAWN = { 8, 8 };
 
 struct Player {
     b2BodyId body_id;
+    MagnetCursor magnet_cursor;
     float jump_timer;
     bool movement_locked;
     bool is_facing_left;

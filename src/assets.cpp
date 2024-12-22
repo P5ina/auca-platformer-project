@@ -20,6 +20,7 @@ std::unique_ptr<AssetImages> load_images() {
     asset_images->player_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/player/player.png"));
     asset_images->book_texture = LoadTexture(ASSETS_PATH"images/collectables/knowledge_book.png");
     asset_images->pointer_texture = LoadTexture(ASSETS_PATH"images/ui/pointer.png");
+    asset_images->magnet_cursor = LoadTexture(ASSETS_PATH"images/player/cursor.png");
     return asset_images;
 }
 
@@ -32,6 +33,7 @@ void unload_images(std::unique_ptr<AssetImages> asset_images) {
     UnloadTexture(*asset_images->player_texture);
     UnloadTexture(asset_images->book_texture);
     UnloadTexture(asset_images->pointer_texture);
+    UnloadTexture(asset_images->magnet_cursor);
 }
 
 std::unique_ptr<AssetSounds> load_sounds() {

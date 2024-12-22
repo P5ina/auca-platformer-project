@@ -46,6 +46,7 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
 void draw_level_scene(GameState *game_state) {
     draw_level(game_state->loaded_level.get(), game_state->assets.get());
     draw_player(game_state->loaded_level.get(), game_state->player.get(), game_state->assets.get());
+    draw_magnet_cursor(&game_state->player->magnet_cursor, game_state->assets.get());
     if (game_state->debug_mode) {
         draw_level_debug_overlay(game_state->loaded_level.get());
         draw_player_debug_overlay(game_state->loaded_level.get(), game_state->player.get());
