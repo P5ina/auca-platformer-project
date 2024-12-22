@@ -4,6 +4,7 @@
 
 #ifndef LEVEL_SCENE_H
 #define LEVEL_SCENE_H
+#include <global_state.h>
 #include <level/level.h>
 
 void draw_player(Level* level, Player* player, Assets* assets);

@@ -10,44 +10,15 @@
 #include <vector>
 #include <graphics/scene.h>
 #include <graphics/scenes/dialogue.h>
+#include <level/level.h>
 
 #include "box2d/id.h"
-
-struct LevelPosition {
-    int x, y, z;
-};
-
-struct KnowledgeBook {
-    LevelPosition level_position;
-    Vector2 position;
-    std::string tip_text;
-    bool isCollected = false;
-};
 
 struct Player {
     b2BodyId body_id;
     float jump_timer;
     bool movement_locked;
     bool is_facing_left;
-};
-
-enum class LevelTileType {
-    AIR,
-    WALL
-};
-
-struct LevelTile {
-    Vector2i position;
-    LevelTileType type;
-};
-
-struct Level {
-    int rows;
-    int columns;
-    b2WorldId world_id;
-    std::vector<LevelTile> tiles;
-    std::vector<b2BodyId> wall_bodies;
-    std::vector<KnowledgeBook> books;
 };
 
 struct MainMenuState {

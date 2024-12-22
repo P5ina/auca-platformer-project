@@ -80,6 +80,10 @@ void draw_game(std::unique_ptr<GameState> &game_state, RenderTexture2D &target) 
     EndDrawing();
 }
 
+void process_events() {
+
+}
+
 int main() {
     const float PHYSICS_DELTA_TIME = 1.0f / 60.0f;
     const int PHYSICS_SUB_STEP = 4;
@@ -89,7 +93,6 @@ int main() {
 
     auto game_state = std::make_unique<GameState>(GameState {
         .scene = Scene::MENU_SCENE,
-        .loaded_level = nullptr,
         .assets = std::make_unique<Assets>(),
     });
 
@@ -97,22 +100,23 @@ int main() {
     game_state->assets->images = load_images();
     load_shaders();
     game_state->assets->sounds = load_sounds();
-    load_level(game_state, LevelPosition { 0, 0, 0 });
+    game_state->loaded_level = load_level({ 0, 0 });
     spawn_player(game_state, { 7.5, 8 });
     init_main_menu(game_state.get());
 
     RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
     while (!WindowShouldClose()) {
-        update_game(game_state, PHYSICS_DELTA_TIME);
         if (game_state != nullptr && game_state->loaded_level != nullptr) {
             b2World_Step(game_state->loaded_level->world_id, PHYSICS_DELTA_TIME, PHYSICS_SUB_STEP);
         }
+        update_game(game_state, PHYSICS_DELTA_TIME);
+        process_events();
         draw_game(game_state, target);
     }
 
     UnloadRenderTexture(target);
-    unload_level(game_state);
+    unload_level(std::move(game_state->loaded_level));
     unload_sounds(std::move(game_state->assets->sounds));
     unload_images(std::move(game_state->assets->images)) ;
     unload_shaders();

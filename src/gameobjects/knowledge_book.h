@@ -5,23 +5,22 @@
 #ifndef KNOWLEDGE_BOOK_H
 #define KNOWLEDGE_BOOK_H
 
-#include <string>
 #include <vector>
-#include <level/level.h>
+#include <nlohmann/json.hpp>
 
 #include "raylib.h"
+#include "box2d/box2d.h"
 
-const std::vector knowledge_books = {
-    KnowledgeBook {
-        .level_position = { 0, 0, 0 },
-        .position = { 8.5f, 4.0f },
-        .tip_text = "Use WASD to move."
-    },
-    KnowledgeBook {
-        .level_position = { 1, 0, 0 },
-        .position = { 8.5f, 4.0f },
-        .tip_text = "Use WASD to move."
-    },
+struct KnowledgeBook {
+    int index;
+    Vector2 position;
+    std::vector<std::string> dialogue_lines;
+    b2BodyId body_id;
 };
+
+void to_json(nlohmann::json& j, const KnowledgeBook& b);
+void from_json(const nlohmann::json& j, KnowledgeBook& b);
+
+void init_knowledge_book(b2WorldId world_id, KnowledgeBook* book);
 
 #endif //KNOWLEDGE_BOOK_H

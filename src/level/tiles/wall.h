@@ -6,6 +6,7 @@
 #define WALL_H
 
 #include <level/level.h>
+#include <global_state.h>
 
 #include "raylib.h"
 

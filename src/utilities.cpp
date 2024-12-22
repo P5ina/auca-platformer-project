@@ -6,6 +6,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <nlohmann/json.hpp>
 
 float rand_from_to(float from, float to) {
     return from + static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) * (to - from); // NOLINT(*-msc50-cpp)
@@ -33,4 +34,16 @@ Color get_color_from_hex(const std::string& hex_string) {
 
 Vector2i vector2i_add(Vector2i v1, Vector2i v2) {
     return { v1.x + v2.x, v1.y + v2.y };
+}
+
+void to_json(nlohmann::json& j, const Vector2& v) {
+    j = nlohmann::json {
+            { "x", v.x },
+            { "y", v.y }
+    };
+}
+
+void from_json(const nlohmann::json& j, Vector2& v) {
+    j.at("x").get_to(v.x);
+    j.at("y").get_to(v.y);
 }

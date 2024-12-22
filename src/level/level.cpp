@@ -5,33 +5,42 @@
 #include "level.h"
 
 #include <format>
+#include <fstream>
 #include <global_state.h>
+#include <iostream>
 #include <queue>
 #include <string>
 #include <utilities.h>
 #include <gameobjects/player.h>
-#include <graphics/scenes/level_scene.h>
+#include <nlohmann/json.hpp>
 
 #include "box2d/box2d.h"
 
-void load_level(std::unique_ptr<GameState> &game_state, LevelPosition position) {
-    const std::string filepath_prefix = ASSETS_PATH"images/levels/";
-
-    auto [x, y, z] = position;
-    std::string filepath = std::format("{}level_{}_{}_{}.png", filepath_prefix, x, y, z);
-    Image level_image = LoadImage(filepath.c_str());
-
-    std::unique_ptr<Level> new_level = parse_level(&level_image);
-    game_state->loaded_level = std::move(new_level);
-
-    UnloadImage(level_image);
+void to_json(nlohmann::json& j, const LevelFileData& d) {
+    j = nlohmann::json{ {"books", d.books} };
 }
 
-void unload_level(std::unique_ptr<GameState> &game_state) {
-    despawn_player(game_state);
-    b2DestroyWorld(game_state->loaded_level->world_id);
+void from_json(const nlohmann::json& j, LevelFileData& d) {
+    j.at("books").get_to(d.books);
+}
 
-    game_state->loaded_level = nullptr;
+std::unique_ptr<Level> load_level(Vector2i position) {
+    auto [x, y] = position;
+    std::string image_filepath = std::format(ASSETS_PATH"images/levels/level_{}_{}.png", x, y);
+    Image level_image = LoadImage(image_filepath.c_str());
+
+    std::string data_filepath = std::format(ASSETS_PATH"levels/level_{}_{}.json", x, y);
+    std::ifstream json_file(data_filepath);
+    nlohmann::json data = nlohmann::json::parse(json_file);
+
+    std::unique_ptr<Level> new_level = parse_level(&level_image, &data);
+
+    UnloadImage(level_image);
+    return new_level;
+}
+
+void unload_level(std::unique_ptr<Level> level) {
+    b2DestroyWorld(level->world_id);
 }
 
 b2ChainDef create_wall_chain(Level *level, Vector2i start_position) {
@@ -148,7 +157,7 @@ void create_level_collisions(Level *level) {
     }
 }
 
-std::unique_ptr<Level> parse_level(const Image *image) {
+std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *json_data) {
     const int width = image->width;
     const int height = image->height;
 
@@ -176,6 +185,9 @@ std::unique_ptr<Level> parse_level(const Image *image) {
 
     // Calculate shapes for walls
     create_level_collisions(level.get());
+
+    LevelFileData data = json_data->template get<LevelFileData>();
+    std::cout << data.books[0].dialogue_lines[0] << std::endl;
 
     return level;
 }

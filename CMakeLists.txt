@@ -26,6 +26,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(box2d)
 
+FetchContent_Declare(
+        json
+        DOWNLOAD_EXTRACT_TIMESTAMP OFF
+        URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
 # Building project
 
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp") # Define PROJECT_SOURCES as a list of all source files
@@ -42,6 +49,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 target_link_libraries(${PROJECT_NAME} raylib)
 target_link_libraries(${PROJECT_NAME} box2d)
+target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
