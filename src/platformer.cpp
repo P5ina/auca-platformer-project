@@ -13,45 +13,6 @@
 
 #include "globals.h"
 
-void update_game(std::unique_ptr<GameState> &game_state, float delta) {
-    game_frame++;
-
-    const auto inputs = std::make_unique<GameInput>(read_game_input());
-
-    if (inputs->toggle_debug_mode) {
-        game_state->debug_mode = !game_state->debug_mode;
-    }
-
-    int monitor = GetCurrentMonitor();
-    int monitor_width = GetMonitorWidth(monitor);
-    int monitor_height = GetMonitorHeight(monitor);
-
-    if (inputs->toggle_full_screen) {
-        if (IsWindowFullscreen()) {
-            ToggleFullscreen();
-            SetWindowSize(INITIAL_WIDTH, INITIAL_HEIGHT);
-        } else {
-            SetWindowSize(monitor_width, monitor_height);
-            ToggleFullscreen();
-        }
-    }
-
-    if (IsWindowFullscreen() &&
-        (monitor_width != GetScreenWidth() || monitor_height != GetScreenHeight())) {
-        SetWindowSize(monitor_width, monitor_height);
-    }
-
-    update_player(game_state.get(), inputs.get(), delta);
-    update_dialogue(game_state->loaded_dialogue.get(), inputs.get(), game_state->assets.get());
-    if (is_dialogue_ended(game_state->loaded_dialogue.get()) && game_state->loaded_dialogue != nullptr) {
-        game_state->loaded_dialogue = nullptr;
-    }
-
-    if (game_state->scene == Scene::MENU_SCENE) {
-        update_menu(game_state.get(), inputs.get());
-    }
-}
-
 void draw_game(std::unique_ptr<GameState> &game_state, RenderTexture2D &target) {
     if (game_state->last_resolution.x != GetScreenWidth() ||
         game_state->last_resolution.y != GetScreenHeight()) {
@@ -132,7 +93,7 @@ int main() {
     load_shaders();
     game_state->assets->sounds = load_sounds();
     game_state->loaded_level = load_level({0, 0});
-    spawn_player(game_state, {8, 8});
+    spawn_player(game_state, {8, 8}, { 0, 0 });
     init_main_menu(game_state.get());
 
     RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());

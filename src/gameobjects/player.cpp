@@ -11,11 +11,12 @@
 #include "gameobject_user_data.h"
 #include "box2d/box2d.h"
 
-void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position) {
+void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position, b2Vec2 initial_velocity) {
     b2BodyDef player_body_def = b2DefaultBodyDef();
     player_body_def.type = b2_dynamicBody;
     player_body_def.position = {position.x, position.y - 0.5f};
     player_body_def.fixedRotation = true;
+    player_body_def.linearVelocity = initial_velocity;
     b2BodyId player_body_id = b2CreateBody(game_state->loaded_level->world_id, &player_body_def);
 
     b2ShapeDef shape_def = b2DefaultShapeDef();
@@ -80,6 +81,23 @@ void update_player(GameState *game_state, GameInput *game_input, float delta) {
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
 }
 
+void clamp_player_position(const Level *level, const Player *player) {
+    b2Vec2 pos = b2Body_GetPosition(player->body_id);
+    auto width = static_cast<float>(level->columns);
+
+    b2Vec2 velocity = b2Body_GetLinearVelocity(player->body_id);
+
+    if (velocity.x > 0 && pos.x > width - 0.1f) {
+        velocity.x = width - 0.1f - pos.x;
+    }
+    if (velocity.x < 0 && pos.x < 0.1f) {
+        velocity.x = 0.1f - pos.x;
+    }
+
+    b2Body_SetLinearVelocity(player->body_id, velocity);
+}
+
+
 void jump_player(GameState *game_state) {
     constexpr float JUMP_FORCE = -8.0f;
     constexpr float JUMP_COOLDOWN = 0.3f;
@@ -130,4 +148,45 @@ bool is_grounded(b2WorldId world_id, std::unique_ptr<Player> &player) {
     b2World_CastCapsule(world_id, &cast_capsule, origin_transform, direction, filter, ground_cast_callback, &context);
 
     return context.is_hit;
+}
+
+Vector2i get_next_level_offset(const Level* level, const Player* player) {
+    b2Vec2 pos = b2Body_GetPosition(player->body_id);
+
+    if (pos.x < 0.1f) {
+        return Vector2i { -1, 0 };
+    }
+    if (pos.y < 0) {
+        return Vector2i { 0, -1 };
+    }
+    if (pos.x > static_cast<float>(level->columns)) {
+        return Vector2i { 1, 0 };
+    }
+    if (pos.y > static_cast<float>(level->rows) - 0.1f) {
+        return Vector2i { 0, 1 };
+    }
+
+    return Vector2i { 0, 0 };
+}
+
+Vector2 get_next_level_player_position(const Level* level, const Player* player) {
+    b2Vec2 pos = b2Body_GetPosition(player->body_id);
+    auto width = static_cast<float>(level->columns);
+    auto height = static_cast<float>(level->rows);
+
+    pos.y += 0.5f;
+
+    if (pos.x < 0.1f) {
+        return { width - 0.1f, pos.y };
+    }
+    if (pos.y - 0.5f < 0) {
+        return { pos.x, height };
+    }
+    if (pos.x > width - 0.1f) {
+        return { 0.1f, pos.y };
+    }
+    if (pos.y - 0.5f > height) {
+        return { pos.x, 0 };
+    }
+    return { pos.x, pos.y };
 }

@@ -31,6 +31,7 @@ struct LevelTile {
 };
 
 struct Level {
+    Vector2i position;
     int rows;
     int columns;
     b2WorldId world_id;
@@ -43,6 +44,7 @@ struct Level {
 void to_json(nlohmann::json& j, const LevelFileData& d);
 void from_json(const nlohmann::json& j, LevelFileData& d);
 
+bool has_level(Vector2i position);
 std::unique_ptr<Level> load_level(Vector2i position);
 void unload_level(std::unique_ptr<Level> level);
 std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *json_data);

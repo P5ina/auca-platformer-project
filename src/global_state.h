@@ -39,4 +39,6 @@ struct GameState {
     MainMenuState main_menu_state;
 };
 
+void update_game(std::unique_ptr<GameState> &game_state, float delta);
+
 #endif //GLOBAL_STATE_H

@@ -24,6 +24,14 @@ void from_json(const nlohmann::json& j, LevelFileData& d) {
     j.at("books").get_to(d.books);
 }
 
+bool has_level(Vector2i position) {
+    auto [x, y] = position;
+    std::string data_filepath = std::format(ASSETS_PATH"levels/level_{}_{}.json", x, y);
+    std::ifstream json_file(data_filepath);
+    return json_file.good();
+}
+
+
 std::unique_ptr<Level> load_level(Vector2i position) {
     auto [x, y] = position;
     std::string image_filepath = std::format(ASSETS_PATH"images/levels/level_{}_{}.png", x, y);
@@ -34,6 +42,7 @@ std::unique_ptr<Level> load_level(Vector2i position) {
     nlohmann::json data = nlohmann::json::parse(json_file);
 
     std::unique_ptr<Level> new_level = parse_level(&level_image, &data);
+    new_level->position = position;
 
     UnloadImage(level_image);
     return new_level;
