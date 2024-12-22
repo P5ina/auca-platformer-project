@@ -18,6 +18,9 @@ struct AssetImages {
     Texture2D book_texture;
     Texture2D pointer_texture;
     Texture2D magnet_cursor;
+    Texture2D magnet_block_texture;
+    Texture2D magnet_pulling_texture;
+    Texture2D magnet_pushing_texture;
 };
 
 struct AssetSounds {

@@ -16,6 +16,7 @@ enum PhysicsLayers {
     WALL_LAYER = 0x00000002,
     GHOST_LAYER = 0x00000004,
     COLLECTABLE_LAYER = 0x00000008,
+    MAGNET_BLOCK_LAYER = 0x00000010,
 };
 
 float rand_from_to(float from, float to);

@@ -7,6 +7,7 @@
 #include <globals.h>
 #include <graphics/metrics.h>
 #include <level/tiles/air.h>
+#include <level/tiles/magnet_block.h>
 #include <level/tiles/wall.h>
 
 #include "raymath.h"
@@ -41,13 +42,19 @@ void draw_level(Level *level, Assets *assets) {
             LevelTile tile = level->tiles[row * level->columns + column];
 
             switch (tile.type) {
-                case LevelTileType::AIR:
+                case LevelTileType::AIR: {
                     draw_air(pos, size, assets);
-                break;
-                case LevelTileType::WALL:
+                    break;
+                }
+                case LevelTileType::WALL: {
                     char surroundings = get_surroundings(level, column, row);
-                draw_wall(pos, size, surroundings, assets);
-                break;
+                    draw_wall(pos, size, surroundings, assets);
+                    break;
+                }
+                case LevelTileType::MAGNET_BLOCK: {
+                    draw_magnet_block(pos, size, assets);
+                    break;
+                }
             }
         }
     }

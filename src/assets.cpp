@@ -16,11 +16,14 @@ std::unique_ptr<AssetImages> load_images() {
         LoadTexture(ASSETS_PATH"images/dialogue/next_indicator.png")
     );
     asset_images->wall_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/wall/wall.png"));
+    asset_images->magnet_block_texture = LoadTexture(ASSETS_PATH"images/wall/magnet_block.png");
     asset_images->air_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/air.png"));
     asset_images->player_texture = std::make_unique<Texture2D>(LoadTexture(ASSETS_PATH"images/player/player.png"));
     asset_images->book_texture = LoadTexture(ASSETS_PATH"images/collectables/knowledge_book.png");
     asset_images->pointer_texture = LoadTexture(ASSETS_PATH"images/ui/pointer.png");
     asset_images->magnet_cursor = LoadTexture(ASSETS_PATH"images/player/cursor.png");
+    asset_images->magnet_pulling_texture = LoadTexture(ASSETS_PATH"images/player/magnet_pulling.png");
+    asset_images->magnet_pushing_texture = LoadTexture(ASSETS_PATH"images/player/magnet_pushing.png");
     return asset_images;
 }
 
@@ -29,11 +32,14 @@ void unload_images(std::unique_ptr<AssetImages> asset_images) {
     UnloadTexture(*asset_images->dialogue_panel_texture);
     UnloadTexture(*asset_images->dialogue_indicator_texture);
     UnloadTexture(*asset_images->wall_texture);
+    UnloadTexture(asset_images->magnet_block_texture);
     UnloadTexture(*asset_images->air_texture);
     UnloadTexture(*asset_images->player_texture);
     UnloadTexture(asset_images->book_texture);
     UnloadTexture(asset_images->pointer_texture);
     UnloadTexture(asset_images->magnet_cursor);
+    UnloadTexture(asset_images->magnet_pulling_texture);
+    UnloadTexture(asset_images->magnet_pushing_texture);
 }
 
 std::unique_ptr<AssetSounds> load_sounds() {

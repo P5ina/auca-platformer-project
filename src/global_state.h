@@ -20,9 +20,11 @@ constexpr Vector2 PLAYER_SPAWN = { 8, 8 };
 
 struct Player {
     b2BodyId body_id;
+    b2BodyId attached_to_body_id;
     MagnetCursor magnet_cursor;
     float jump_timer;
     bool movement_locked;
+    bool is_grounded;
     bool is_facing_left;
 };
 

@@ -6,6 +6,7 @@
 #define PAUSE_H
 #include <assets.h>
 #include <input.h>
+#include <optional>
 #include <graphics/scene.h>
 
 struct PauseMenuState {

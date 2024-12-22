@@ -11,6 +11,7 @@
 #include <queue>
 #include <string>
 #include <utilities.h>
+#include <gameobjects/gameobject_user_data.h>
 #include <gameobjects/player.h>
 #include <nlohmann/json.hpp>
 
@@ -180,7 +181,7 @@ std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *jso
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             Color tile_color = GetImageColor(*image, x, y);
-            LevelTile tile = create_level_tile(tile_color, {x, y});
+            LevelTile tile = create_level_tile(tile_color, {x, y}, world_id);
             tiles[y * width + x] = tile;
         }
     }
@@ -208,8 +209,9 @@ std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *jso
 }
 
 // Could be done using dictionaries
-LevelTile create_level_tile(Color color, Vector2i position) {
+LevelTile create_level_tile(Color color, Vector2i position, b2WorldId world_id) {
     LevelTileType type = LevelTileType::AIR;
+    b2BodyId body_id = b2_nullBodyId;
 
     if (ColorIsEqual(color, get_color_from_hex(AIR_COLOR))) {
         type = LevelTileType::AIR;
@@ -217,10 +219,30 @@ LevelTile create_level_tile(Color color, Vector2i position) {
     if (ColorIsEqual(color, get_color_from_hex(WALL_COLOR))) {
         type = LevelTileType::WALL;
     }
+    if (ColorIsEqual(color, get_color_from_hex(MAGNET_BLOCK_COLOR))) {
+        type = LevelTileType::MAGNET_BLOCK;
+        b2BodyDef body_def = b2DefaultBodyDef();
+        body_def.position = {
+            static_cast<float>(position.x) + 0.5f,
+            static_cast<float>(position.y) + 0.5f
+        };
+        body_id = b2CreateBody(world_id, &body_def);
 
-    return LevelTile{
+        b2Polygon box = b2MakeSquare(0.5);
+        b2ShapeDef shape_def = b2DefaultShapeDef();
+        shape_def.filter.categoryBits = PhysicsLayers::MAGNET_BLOCK_LAYER;
+        shape_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER;
+        shape_def.userData = new GameObjectUserData {
+            .type = GAME_OBJECT_MAGNET_BLOCK
+        };
+
+        b2CreatePolygonShape(body_id, &shape_def, &box);
+    }
+
+    return LevelTile {
         .position = position,
         .type = type,
+        .body_id = body_id,
     };
 }
 

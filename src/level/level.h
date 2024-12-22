@@ -8,13 +8,13 @@
 #include <optional>
 #include <utilities.h>
 #include <gameobjects/knowledge_book.h>
-#include <nlohmann/adl_serializer.hpp>
 
 #include "raylib.h"
 #include "box2d/box2d.h"
 
 const std::string AIR_COLOR = "#000000";
 const std::string WALL_COLOR = "#ffffff";
+const std::string MAGNET_BLOCK_COLOR = "#595652";
 
 struct LevelFileData {
     std::vector<KnowledgeBook> books;
@@ -22,12 +22,14 @@ struct LevelFileData {
 
 enum class LevelTileType {
     AIR,
-    WALL
+    WALL,
+    MAGNET_BLOCK
 };
 
 struct LevelTile {
     Vector2i position;
     LevelTileType type;
+    b2BodyId body_id;
 };
 
 struct Level {
@@ -48,14 +50,12 @@ bool has_level(Vector2i position);
 std::unique_ptr<Level> load_level(Vector2i position);
 void unload_level(std::unique_ptr<Level> level);
 std::unique_ptr<Level> parse_level(const Image *image, const nlohmann::json *json_data);
-LevelTile create_level_tile(Color color, Vector2i position);
+LevelTile create_level_tile(Color color, Vector2i position, b2WorldId world_id);
 
 void set_tile(std::unique_ptr<Level> &level, LevelTile tile, Vector2i position);
 void set_tile(std::unique_ptr<Level> &level, LevelTile tile, int tile_index);
 std::optional<LevelTile> get_tile(Level *level, Vector2i position);
 std::optional<LevelTile> get_tile(Level *level, int tile_index);
 std::optional<int> get_tile_index(Level *level, Vector2i position);
-
-void collect_book(Level* level, KnowledgeBook* book);
 
 #endif //LEVEL_H

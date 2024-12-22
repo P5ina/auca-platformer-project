@@ -4,11 +4,11 @@
 
 #ifndef GAMEOBJECT_USER_DATA_H
 #define GAMEOBJECT_USER_DATA_H
-#include <global_state.h>
 
 enum GameObjectType {
     GAME_OBJECT_PLAYER,
     GAME_OBJECT_KNOWLEDGE_BOOK,
+    GAME_OBJECT_MAGNET_BLOCK,
 };
 
 struct GameObjectUserData {
