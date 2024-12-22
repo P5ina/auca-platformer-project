@@ -73,26 +73,20 @@ void update_magnet_cursor(MagnetCursor *magnet_cursor, Level *level, GameInput *
     query_filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
     query_filter.maskBits = PhysicsLayers::MAGNET_BLOCK_LAYER;
 
-    // Start pulling
-    if (game_input->magnet_pull && !magnet_cursor->is_pull) {
-        std::cout << "Magnet pull start" << std::endl;
-        std::cout << "Magnet pull origin (" << cursor_level_position.x << ", " << cursor_level_position.y
-            << ")" << std::endl;
-        std::cout << "Magnet pull radius " << query_circle.radius << std::endl;
+    magnet_cursor->is_pull = game_input->magnet_pull;
+    magnet_cursor->is_push = game_input->magnet_push;
+
+    if ((magnet_cursor->is_pull || magnet_cursor->is_push) && B2_IS_NULL(magnet_cursor->attached_to)) {
         MagnetOverlapContext context{};
         b2World_OverlapCircle(level->world_id, &query_circle, query_transform, query_filter, magnet_overlap_callback, &context);
         magnet_cursor->attached_to = context.body_id;
-
-        magnet_cursor->is_pull = game_input->magnet_pull;
+        magnet_cursor->is_player_moving = true;
     }
     // Stop pulling
-    if (!game_input->magnet_pull && magnet_cursor->is_pull) {
-        std::cout << "Magnet pull end" << std::endl;
+    if ((!magnet_cursor->is_pull && !magnet_cursor->is_push) && !B2_IS_NULL(magnet_cursor->attached_to)) {
         magnet_cursor->attached_to = b2_nullBodyId;
-        magnet_cursor->is_pull = game_input->magnet_pull;
+        magnet_cursor->is_player_moving = false;
     }
-
-    magnet_cursor->is_push = game_input->magnet_push;
 }
 
 void draw_magnet_cursor(MagnetCursor *magnet_cursor, Assets *assets) {

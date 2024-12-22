@@ -102,18 +102,24 @@ void update_player(GameState *game_state, GameInput *game_input, float delta) {
     }
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
 
-    if (game_state->player->magnet_cursor.is_pull) {
-        update_magnet_player(game_state->player.get(), game_state->loaded_level.get());
-    }
+    update_magnet_player(game_state->player.get(), game_state->loaded_level.get());
 }
 
 void update_magnet_player(Player *player, Level *level) {
-    if (B2_IS_NULL(player->magnet_cursor.attached_to)) {
+    if (B2_IS_NULL(player->magnet_cursor.attached_to) || !player->magnet_cursor.is_player_moving) {
         return;
     }
 
     constexpr float ATTACHING_FORCE = 400.0f;
     constexpr float MAX_DIST = 5.0f;
+
+    float force = 0.0f;
+    if (player->magnet_cursor.is_pull) {
+        force += ATTACHING_FORCE;
+    }
+    if (player->magnet_cursor.is_push) {
+        force -= ATTACHING_FORCE;
+    }
 
     b2Vec2 player_position = b2Body_GetPosition(player->body_id);
     b2Vec2 target_position = b2Body_GetPosition(player->magnet_cursor.attached_to);
@@ -124,7 +130,7 @@ void update_magnet_player(Player *player, Level *level) {
     }
 
     b2Vec2 direction = b2Normalize(b2Sub(target_position, player_position));
-    b2Vec2 add_velocity = b2MulSV(ATTACHING_FORCE / distance, direction);
+    b2Vec2 add_velocity = b2MulSV(force / distance, direction);
 
     b2Body_ApplyForceToCenter(player->body_id, add_velocity, true);
 }
