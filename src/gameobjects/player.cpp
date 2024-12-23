@@ -4,12 +4,14 @@
 
 #include "player.h"
 
+#include <format>
 #include <globals.h>
 #include <iostream>
 #include <graphics/metrics.h>
 #include <sys/stat.h>
 
 #include "gameobject_user_data.h"
+#include "raymath.h"
 #include "box2d/box2d.h"
 
 void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position, b2Vec2 initial_velocity) {
@@ -19,7 +21,7 @@ void spawn_player(std::unique_ptr<GameState> &game_state, Vector2 position, b2Ve
     player_body_def.fixedRotation = true;
     player_body_def.linearVelocity = initial_velocity;
     b2BodyId player_body_id = b2CreateBody(game_state->loaded_level->world_id, &player_body_def);
-    add_player_shape(player_body_id, { 0, 0 });
+    add_player_shape(player_body_id, {0, 0});
 
     game_state->player = std::make_unique<Player>(Player{
             .body_id = player_body_id,
@@ -49,7 +51,7 @@ void add_player_shape(b2BodyId body_id, b2Vec2 offset) {
     constexpr float height = 0.9f;
     constexpr float radius = 0.3f;
     b2Capsule collider = {
-        .center1 = {0 + offset.x, 0.5f - radius + offset.y },
+        .center1 = {0 + offset.x, 0.5f - radius + offset.y},
         .center2 = {0 + offset.x, 0.5f - height + radius + offset.y},
         .radius = radius
     };
@@ -103,6 +105,7 @@ void update_player(GameState *game_state, GameInput *game_input, float delta) {
     b2Body_SetLinearVelocity(game_state->player->body_id, velocity);
 
     update_magnet_player(game_state->player.get(), game_state->loaded_level.get());
+    update_magnet_object(game_state->player.get(), game_state->loaded_level.get());
 }
 
 void update_magnet_player(Player *player, Level *level) {
@@ -243,4 +246,175 @@ Vector2 get_next_level_player_position(const Level *level, const Player *player)
         return {pos.x, 0};
     }
     return {pos.x, pos.y};
+}
+
+struct MagnetOverlapContext {
+    b2BodyId body_id;
+    bool hit;
+};
+
+bool magnet_overlap_callback(b2ShapeId shapeId, void *context) {
+    auto magnet_context = static_cast<MagnetOverlapContext *>(context);
+    b2BodyId body_id = b2Shape_GetBody(shapeId);
+    magnet_context->body_id = body_id;
+    magnet_context->hit = true;
+    return false;
+}
+
+void update_magnet_cursor(Level *level, Player *player, GameInput *game_input) {
+    MagnetCursor *magnet_cursor = &player->magnet_cursor;
+    float ui_scale = get_ui_scale();
+    float cursor_size = 30.0f * ui_scale;
+    float tile_size = get_tile_screen_size(level);
+
+    float width = get_display_width();
+    float height = get_display_height();
+    float mouse_sens = 1.0f;
+    Vector2 mouse_delta = Vector2Scale(GetMouseDelta(), mouse_sens);
+
+    magnet_cursor->delta = mouse_delta;
+
+    if (B2_IS_NULL(magnet_cursor->attached_to)) {
+        Vector2 cursor_pos = magnet_cursor->position;
+        cursor_pos = Vector2Add(cursor_pos, mouse_delta);
+
+        if (cursor_pos.x < cursor_size / 2) {
+            cursor_pos = {cursor_size / 2, cursor_pos.y};
+        }
+        if (cursor_pos.x > width - cursor_size / 2) {
+            cursor_pos = {width - cursor_size / 2, cursor_pos.y};
+        }
+        if (cursor_pos.y < cursor_size / 2) {
+            cursor_pos = {cursor_pos.x, cursor_size / 2};
+        }
+        if (cursor_pos.y > height - cursor_size / 2) {
+            cursor_pos = {cursor_pos.x, height - cursor_size / 2};
+        }
+
+        magnet_cursor->position = cursor_pos;
+    } else {
+        b2Vec2 target_position = b2Body_GetPosition(magnet_cursor->attached_to);
+        Vector2 target_screen_position = get_tile_screen_position(level, {
+                                                                      target_position.x, target_position.y
+                                                                  });
+        magnet_cursor->position = target_screen_position;
+    }
+
+    b2Vec2 cursor_level_position = {
+        magnet_cursor->position.x / tile_size,
+        magnet_cursor->position.y / tile_size
+    };
+    b2Circle query_circle = b2Circle{
+        .center = {0, 0},
+        .radius = (cursor_size / tile_size) / 2,
+    };
+    b2Transform query_transform;
+    query_transform.p = cursor_level_position;
+    query_transform.q = b2Rot_identity;
+    b2QueryFilter query_filter = b2DefaultQueryFilter();
+    query_filter.categoryBits = PhysicsLayers::PLAYER_LAYER;
+    query_filter.maskBits = PhysicsLayers::MAGNET_BLOCK_LAYER;
+
+    if (game_input->magnet_pull_pressed) {
+        magnet_cursor->is_pull = true;
+    }
+    if (game_input->magnet_pull_released) {
+        magnet_cursor->is_pull = false;
+    }
+    if (game_input->magnet_push_pressed) {
+        magnet_cursor->is_push = true;
+    }
+    if (game_input->magnet_push_released) {
+        magnet_cursor->is_push = false;
+    }
+
+    if ((magnet_cursor->is_pull || magnet_cursor->is_push) && B2_IS_NULL(magnet_cursor->attached_to)) {
+        MagnetOverlapContext context{};
+        b2World_OverlapCircle(level->world_id, &query_circle, query_transform, query_filter, magnet_overlap_callback,
+                              &context);
+
+        if (context.hit) {
+            b2ShapeId shape_id;
+            b2Body_GetShapes(context.body_id, &shape_id, 1);
+            magnet_cursor->is_player_moving = true;
+
+            switch (auto *user_data = static_cast<GameObjectUserData *>(b2Shape_GetUserData(shape_id)); user_data->
+                type) {
+                case GAME_OBJECT_MAGNET_BOX: {
+                    if (magnet_cursor->is_pull) {
+                        b2Vec2 target_position = b2Body_GetPosition(context.body_id);
+                        float distance = b2Distance(
+                            b2Body_GetPosition(player->body_id), target_position);
+
+                        if (distance < MAX_MAGNET_DISTANCE) {
+                            magnet_cursor->is_push = false;
+                            magnet_cursor->is_player_moving = false;
+                            magnet_cursor->target_pos = target_position;
+                            magnet_cursor->attached_to = context.body_id;
+                        }
+                    }
+                    break;
+                }
+                case GAME_OBJECT_MAGNET_BLOCK: {
+                    magnet_cursor->is_player_moving = true;
+                    magnet_cursor->attached_to = context.body_id;
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+    }
+
+    // Stop pulling
+    if (!B2_IS_NULL(magnet_cursor->attached_to)) {
+        if (!magnet_cursor->is_pull && !magnet_cursor->is_push) {
+            magnet_cursor->attached_to = b2_nullBodyId;
+            magnet_cursor->is_player_moving = false;
+        }
+
+        if (magnet_cursor->is_push && !magnet_cursor->is_player_moving) {
+            magnet_cursor->is_pull = false;
+
+            const float shoot_force = 300.0f;
+
+            b2Vec2 player_position = b2Body_GetPosition(player->body_id);
+            b2Vec2 current_position = b2Body_GetPosition(magnet_cursor->attached_to);
+            b2Vec2 impulse = b2Normalize(b2Sub(current_position, player_position));
+
+            b2Body_ApplyLinearImpulseToCenter(magnet_cursor->attached_to, b2MulSV(shoot_force, impulse), true);
+
+            magnet_cursor->attached_to = b2_nullBodyId;
+            magnet_cursor->is_player_moving = false;
+        }
+    }
+}
+
+void update_magnet_object(Player *player, Level *level) {
+    MagnetCursor *magnet_cursor = &player->magnet_cursor;
+    if (B2_IS_NULL(magnet_cursor->attached_to) || magnet_cursor->is_player_moving) {
+        return;
+    }
+
+    b2Vec2 player_position = b2Body_GetPosition(player->body_id);
+    b2Vec2 delta = {
+        magnet_cursor->delta.x / get_tile_screen_size(level),
+        magnet_cursor->delta.y / get_tile_screen_size(level)
+    };
+    b2Vec2 new_position = b2Add(magnet_cursor->target_pos, delta);
+    b2Vec2 to_target_position = b2Sub(new_position, player_position);
+    float length = b2Length(to_target_position);
+    if (length > MAX_MAGNET_DISTANCE) {
+        new_position = b2Add(player_position, b2MulSV(MAX_MAGNET_DISTANCE, b2Normalize(to_target_position)));
+    }
+
+    std::cout << std::format("Update magnet object delta {}, {}", delta.x, delta.y) << std::endl;
+    std::cout << std::format("Update magnet object {}, {}", new_position.x, new_position.y) << std::endl;
+
+    b2Vec2 current_position = b2Body_GetPosition(magnet_cursor->attached_to);
+    const b2Vec2 force = b2Sub(new_position, current_position);
+    b2Body_SetLinearVelocity(magnet_cursor->attached_to, force);
+
+    magnet_cursor->target_pos = new_position;
 }

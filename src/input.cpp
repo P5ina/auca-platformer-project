@@ -13,8 +13,10 @@ GameInput read_game_input() {
         .select_down_pressed = false,
         .select_pressed = false,
 
-        .magnet_pull = false,
-        .magnet_push = false,
+        .magnet_pull_pressed = false,
+        .magnet_pull_released = false,
+        .magnet_push_pressed = false,
+        .magnet_push_released = false,
 
         .jump = false,
         .toggle_debug_mode = false,
@@ -39,11 +41,17 @@ GameInput read_game_input() {
         game_input.select_pressed = true;
     }
 
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(KEY_Q)) {
-        game_input.magnet_push = true;
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_Q)) {
+        game_input.magnet_push_pressed = true;
     }
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(KEY_E)) {
-        game_input.magnet_pull = true;
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsKeyPressed(KEY_E)) {
+        game_input.magnet_pull_pressed = true;
+    }
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) || IsKeyReleased(KEY_Q)) {
+        game_input.magnet_push_released = true;
+    }
+    if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT) || IsKeyReleased(KEY_E)) {
+        game_input.magnet_pull_released = true;
     }
 
     if (IsKeyDown(KeyboardKey::KEY_SPACE)) {

@@ -12,8 +12,10 @@ struct GameInput {
     bool select_down_pressed;
     bool select_pressed;
 
-    bool magnet_pull;
-    bool magnet_push;
+    bool magnet_pull_pressed;
+    bool magnet_pull_released;
+    bool magnet_push_pressed;
+    bool magnet_push_released;
 
     bool jump;
     bool toggle_debug_mode;

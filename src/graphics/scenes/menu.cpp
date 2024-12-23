@@ -151,7 +151,7 @@ void init_main_menu(GameState *game_state) {
 void update_menu(GameState *game_state, GameInput *game_input) {
     UpdateMusicStream(*game_state->assets->sounds->main_menu_music);
 
-    if (game_state->main_menu_state.elapsed_time > 5.0f && game_input->jump) {
+    if (game_state->main_menu_state.elapsed_time > 0.0f && game_input->jump) {
         StopMusicStream(*game_state->assets->sounds->main_menu_music);
         game_state->player->movement_locked = false;
         game_state->scene = Scene::LEVEL_SCENE;
