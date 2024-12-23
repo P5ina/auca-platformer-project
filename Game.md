@@ -1,6 +1,6 @@
 # Deep Woods
 
-Inspiration: Animal Well, Inscryption
+Inspiration: Animal Well, Inscryption \
 Genre: Platformer, Metroidvania
 
 ## Assets
@@ -32,3 +32,5 @@ You can always return to the old levels.
 
 Engine uses `box2d` for physics and `raylib` for graphics. 
 Also some of the effects made using shaders written in `glsl`.
+
+Levels are loaded from json and png image.

@@ -1,4 +1,15 @@
 {
-  "books": [],
+  "books": [
+    {
+      "position": {
+        "x": 5,
+        "y": 3
+      },
+      "dialogue_lines": [
+        "I found this magnet for you, it have many usages so use it wisely.",
+        "You can use Left and Right Mouse Button for controlling it. Try it on this gray block!"
+      ]
+    }
+  ],
   "magnetic_boxes": []
 }

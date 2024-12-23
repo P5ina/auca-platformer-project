@@ -1,5 +1,15 @@
 {
-  "books": [],
+  "books": [
+    {
+      "position": {
+        "x": 10,
+        "y": 4
+      },
+      "dialogue_lines": [
+        "Seems this blue block is little different from others. It doesn't     looks very stable..."
+      ]
+    }
+  ],
   "magnetic_boxes": [
     {
       "position": {
