@@ -75,7 +75,10 @@ void process_events(GameState* game_state) {
             }
         }
 
-        // process begin event
+        if (visitor_user_data->type == GAME_OBJECT_PLAYER &&
+            sensor_user_data->type == GAME_OBJECT_END_FLAG) {
+            game_state->scene = Scene::END_SCENE;
+        }
     }
 }
 
@@ -106,7 +109,7 @@ int main() {
 
     while (!(WindowShouldClose() || game_state->close)) {
 
-        if (!game_state->pause_menu_state.is_paused) {
+        if (!game_state->pause_menu_state.is_paused && game_state->scene == Scene::LEVEL_SCENE) {
             if (game_state != nullptr && game_state->loaded_level != nullptr) {
                 b2World_Step(game_state->loaded_level->world_id, PHYSICS_DELTA_TIME, PHYSICS_SUB_STEP);
             }

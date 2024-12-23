@@ -25,6 +25,7 @@ std::unique_ptr<AssetImages> load_images() {
     asset_images->magnet_cursor = LoadTexture(ASSETS_PATH"images/player/cursor.png");
     asset_images->magnet_pulling_texture = LoadTexture(ASSETS_PATH"images/player/magnet_pulling.png");
     asset_images->magnet_pushing_texture = LoadTexture(ASSETS_PATH"images/player/magnet_pushing.png");
+    asset_images->end_flag_texture = LoadTexture(ASSETS_PATH"images/collectables/end_flag.png");
     return asset_images;
 }
 
@@ -42,6 +43,7 @@ void unload_images(std::unique_ptr<AssetImages> asset_images) {
     UnloadTexture(asset_images->magnet_cursor);
     UnloadTexture(asset_images->magnet_pulling_texture);
     UnloadTexture(asset_images->magnet_pushing_texture);
+    UnloadTexture(asset_images->end_flag_texture);
 }
 
 std::unique_ptr<AssetSounds> load_sounds() {

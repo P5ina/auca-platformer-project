@@ -246,6 +246,26 @@ LevelTile create_level_tile(Color color, Vector2i position, b2WorldId world_id) 
 
         b2CreatePolygonShape(body_id, &shape_def, &box);
     }
+    if (ColorIsEqual(color, get_color_from_hex(END_FLAG_COLOR))) {
+        type = LevelTileType::END_FLAG;
+        b2BodyDef body_def = b2DefaultBodyDef();
+        body_def.position = b2Vec2 {
+            static_cast<float>(position.x) + 0.5f,
+            static_cast<float>(position.y) + 0.5f
+        };
+        b2BodyId body_id = b2CreateBody(world_id, &body_def);
+
+        b2Polygon box = b2MakeBox(0.5, 0.5);
+        b2ShapeDef shape_def = b2DefaultShapeDef();
+        shape_def.isSensor = true;
+        shape_def.filter.categoryBits = PhysicsLayers::COLLECTABLE_LAYER;
+        shape_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER;
+        shape_def.userData = new GameObjectUserData {
+            .type = GAME_OBJECT_END_FLAG
+        };
+
+        b2CreatePolygonShape(body_id, &shape_def, &box);
+    }
 
     return LevelTile {
         .position = position,

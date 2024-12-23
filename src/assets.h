@@ -22,6 +22,7 @@ struct AssetImages {
     Texture2D magnet_pulling_texture;
     Texture2D magnet_pushing_texture;
     Texture2D magnet_box_texture;
+    Texture2D end_flag_texture;
 };
 
 struct AssetSounds {

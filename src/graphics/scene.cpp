@@ -12,6 +12,7 @@
 #include <global_state.h>
 
 #include "metrics.h"
+#include "scenes/end.h"
 
 
 void draw_current_scene(std::unique_ptr<GameState> &game_state) {
@@ -24,7 +25,6 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
 
     switch (game_state->scene) {
         case Scene::MENU_SCENE: {
-            // draw_level(game_state->loaded_level.get(), game_state->assets.get());
             draw_menu(game_state.get());
             draw_player(game_state->loaded_level.get(), game_state->player.get(), game_state->assets.get());
             break;
@@ -32,9 +32,11 @@ void draw_current_scene(std::unique_ptr<GameState> &game_state) {
         case Scene::LEVEL_SCENE: {
             draw_level_scene(game_state.get());
             draw_dialogue(game_state->loaded_dialogue.get(), game_state->assets.get());
-            // draw_game_overlay();
             draw_pause_menu(&game_state->pause_menu_state, game_state->assets.get());
             break;
+        }
+        case Scene::END_SCENE: {
+            draw_end();
         }
         default: {
             draw_placeholder_scene();

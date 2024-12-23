@@ -8,6 +8,7 @@
 #include <iostream>
 #include <graphics/metrics.h>
 #include <level/tiles/air.h>
+#include <level/tiles/end_flag.h>
 #include <level/tiles/magnet_block.h>
 #include <level/tiles/wall.h>
 
@@ -54,6 +55,10 @@ void draw_level(Level *level, Assets *assets) {
                 }
                 case LevelTileType::MAGNET_BLOCK: {
                     draw_magnet_block(pos, size, assets);
+                    break;
+                }
+                case LevelTileType::END_FLAG: {
+                    draw_end_flag(pos, size, assets);
                     break;
                 }
             }

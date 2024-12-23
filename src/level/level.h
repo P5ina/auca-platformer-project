@@ -16,6 +16,7 @@
 const std::string AIR_COLOR = "#000000";
 const std::string WALL_COLOR = "#ffffff";
 const std::string MAGNET_BLOCK_COLOR = "#595652";
+const std::string END_FLAG_COLOR = "#99e550";
 
 struct LevelFileData {
     std::vector<KnowledgeBook> books;
@@ -25,7 +26,8 @@ struct LevelFileData {
 enum class LevelTileType {
     AIR,
     WALL,
-    MAGNET_BLOCK
+    MAGNET_BLOCK,
+    END_FLAG
 };
 
 struct LevelTile {
