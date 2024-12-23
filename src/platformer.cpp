@@ -98,7 +98,7 @@ int main() {
     game_state->assets->images = load_images();
     load_shaders();
     game_state->assets->sounds = load_sounds();
-    game_state->loaded_level = load_level({0, 0});
+    game_state->loaded_level = load_level(PLAYER_LEVEL_SPAWN);
     spawn_player(game_state, PLAYER_SPAWN, { 0, 0 });
     init_main_menu(game_state.get());
 

@@ -16,7 +16,8 @@
 
 #include "box2d/id.h"
 
-constexpr Vector2 PLAYER_SPAWN = { 8, 8 };
+constexpr Vector2 PLAYER_SPAWN = { 8, 6.5 };
+constexpr Vector2i PLAYER_LEVEL_SPAWN = { 1, 1 };
 
 struct Player {
     b2BodyId body_id;

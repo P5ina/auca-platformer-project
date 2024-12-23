@@ -31,7 +31,7 @@ void init_magnetic_box(b2WorldId world_id, MagneticBox* magnetic_box) {
     b2ShapeDef shape_def = b2DefaultShapeDef();
     shape_def.density = 45.0f;
     shape_def.filter.categoryBits = PhysicsLayers::MAGNET_BLOCK_LAYER;
-    shape_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER | PhysicsLayers::WALL_LAYER;
+    shape_def.filter.maskBits = PhysicsLayers::PLAYER_LAYER | PhysicsLayers::WALL_LAYER | PhysicsLayers::MAGNET_BLOCK_LAYER;
     shape_def.userData = new GameObjectUserData {
         .type = GAME_OBJECT_MAGNET_BOX,
     };

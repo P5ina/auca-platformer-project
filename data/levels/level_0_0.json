@@ -1,16 +1,4 @@
 {
-  "books": [
-    {
-      "position": {
-        "x": 8,
-        "y": 5.5
-      },
-      "dialogue_lines": [
-        "Welcome to Deep Woods. My name is DAMAGED@FILE. To move to the next   page in the book press left mouse button.",
-        "This will be your first lesson. Use A, D and Space keys to move.",
-        "Find books that I left for you, and you will know more about this     world."
-      ]
-    }
-  ],
+  "books": [],
   "magnetic_boxes": []
 }

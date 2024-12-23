@@ -49,7 +49,7 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
             despawn_player(game_state);
             unload_level(std::move(game_state->loaded_level));
 
-            game_state->loaded_level = load_level({ 0, 0 });
+            game_state->loaded_level = load_level(PLAYER_LEVEL_SPAWN);
             game_state->loaded_dialogue = nullptr;
             spawn_player(game_state, PLAYER_SPAWN, { 0, 0 });
             game_state->scene = Scene::MENU_SCENE;
@@ -63,6 +63,7 @@ void update_game(std::unique_ptr<GameState> &game_state, float delta) {
     if (!game_state->pause_menu_state.is_paused && game_state->scene == Scene::LEVEL_SCENE) {
         update_player(game_state.get(), inputs.get(), delta);
         update_dialogue(game_state->loaded_dialogue.get(), inputs.get(), game_state->assets.get());
+
         Vector2i level_offset = get_next_level_offset(game_state->loaded_level.get(), game_state->player.get());
         if (level_offset.x != 0 || level_offset.y != 0) {
             Vector2i next_level = vector2i_add(game_state->loaded_level->position, level_offset);

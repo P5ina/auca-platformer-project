@@ -1,23 +1,4 @@
 {
-  "books": [
-    {
-      "position": {
-        "x": 5.6,
-        "y": 1.5
-      },
-      "dialogue_lines": [
-        "How this ghosts can go underground? And why there's a very powerful magnetic field around them?",
-        "Maybe I can go with them somehow?",
-        "Wait, but they only deal damage if you touch them or stop touching them, maybe I could use that."
-      ]
-    }
-  ],
-  "magnetic_boxes": [
-    {
-      "position": {
-        "x": 7,
-        "y": 1.5
-      }
-    }
-  ]
+  "books": [],
+  "magnetic_boxes": []
 }
